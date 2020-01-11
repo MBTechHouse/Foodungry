@@ -14,6 +14,8 @@ import Profile from './Profile'
 import OrderItems from './OrderItems'
 import ViewCart from './ViewCart'
 import HomeScreen from './HomeScreen.js'
+import Login from './Login.js'
+import Signup from './Signup.js'
 
 const OrderIcon = (style) => (
   <Icon {...style} name='pie-chart-2'/>
@@ -34,7 +36,7 @@ export const BottomNavigationShowcase = (props) => {
     const { [selectedIndex]: selectedRoute } = props.navigation.state.routes;
     props.navigation.navigate(selectedRoute.routeName);
   };
- 
+
   return (
     <BottomNavigation
         appearance="noIndicator"
@@ -77,10 +79,12 @@ const BottomNavigator = createBottomTabNavigator({
 });
 
 const MainNav = createStackNavigator({
+  Login: Login,
+  Signup: Signup,
   HomeScreen: HomeScreen,
   MainFlow: BottomNavigator},
   {
-    initialRouteName: 'HomeScreen',
+    initialRouteName: 'Login',
     header: null,
   headerMode: 'none'
   }
