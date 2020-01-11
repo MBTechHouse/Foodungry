@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ScrollView, ActivityIndicator, Text, Dimensions } from 'react-native';
 import { Container, View, Left, Right, Button, Icon, Item, Input } from 'native-base';
-//import firebase from 'firebase';
+import firebase from 'firebase';
 
 let w = Dimensions.get('screen').width;
 let h = Dimensions.get('screen').height;
@@ -43,8 +43,8 @@ export default class Signup extends Component {
 
     return(
       <Container style={{backgroundColor: '#fdfdfd'}}>
-        <View style={{ position: 'absolute', height: w/1.4, right: 0, height: 0, backgroundColor: 'transparent', borderLeftWidth: w/2, borderTopWidth: h/8, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderTopColor: '#01bff1' }} />
-        <View style={{ position: 'absolute', height: w/1.4, height: 0, backgroundColor: 'transparent', borderRightWidth: w, borderTopWidth: h/5.9, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderTopColor: '#333' }} />
+        <View style={{ position: 'absolute', height: w/1.4, right: 0, height: 0, backgroundColor: 'transparent', borderLeftWidth: w/2, borderTopWidth: h/8, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderTopColor: '#D2F3FC' }} />
+        <View style={{ position: 'absolute', height: w/1.4, height: 0, backgroundColor: 'transparent', borderRightWidth: w, borderTopWidth: h/5.9, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderTopColor: '#01bff1' }} />
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', paddingLeft: 50, paddingRight: 50}}>
             <View style={{marginBottom: 35, width: '100%'}}>
@@ -115,7 +115,7 @@ export default class Signup extends Component {
   }
 
   signup() {
-    /*this.setState({ loading: true });
+    this.setState({ loading: true });
     firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
     .then(
       () => {
@@ -125,7 +125,7 @@ export default class Signup extends Component {
             phone: this.state.phone
           },()=>{this.props.navigation.navigate('Orders')})
     })
-     .catch(() => this.setState({hasError: true, errorText: 'Invalid Credentials !', loading: false }));*/
+     .catch(() => this.setState({hasError: true, errorText: 'Invalid Credentials !', loading: false }));
   }
 
 

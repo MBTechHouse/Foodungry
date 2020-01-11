@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image, ActivityIndicator, ToastAndroid, ProgressBarAndroid, Text, Dimensions } from 'react-native';
 import { Container, View, Left, Right, Button, Icon, Item, Input, Textarea } from 'native-base';
-//import firebase from 'firebase';
+import firebase from 'firebase';
 
 let w = Dimensions.get('screen').width;
 let h = Dimensions.get('screen').height;
@@ -19,14 +19,20 @@ export default class Login extends Component {
         password: '',
         hasError: false,
         errorText: '',
-        //loggedIn: true,
-        loggedIn: false,
+        loggedIn: true,
         loading: false,
       };
   }
 
-  //componentDidMount() {
-  //}
+  componentDidMount() {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          this.props.navigation.navigate('Orders');
+        } else {
+          this.setState({ loggedIn: false });
+        }
+      });
+  }
 
   loadingSpinner() {
     if (this.state.loading) {
@@ -34,8 +40,8 @@ export default class Login extends Component {
     }
     return (
       <View style={{alignItems: 'center', flexDirection: 'row' }}>
-        <Button onPress={() => this.login()} style={{backgroundColor: '#333333', marginTop: 20, marginRight: 30, padding: 15, borderRadius: 25 }}>
-          <Text style={{color: '#fdfdfd'}}>  Login  </Text>
+        <Button onPress={() => this.login()} style={{backgroundColor: '#D2F3FC', marginTop: 20, marginRight: 30, padding: 15, borderRadius: 25 }}>
+          <Text style={{color: '#333'}}>  Login  </Text>
         </Button>
         <Button onPress={() => this.props.navigation.navigate('Signup')}
             style={{backgroundColor: '#fdfdfd', marginTop: 20, marginLeft: 15, padding: 15, borderRadius: 25 }}>
@@ -46,13 +52,13 @@ export default class Login extends Component {
   }
 
   login() {
-    /*this.setState({ loading: true });
+    this.setState({ loading: true });
     firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
     .then(() => {
       this.setState({ loading: false, email: '', password: '' });
       this.props.navigation.navigate('Orders');
     })
-     .catch(() => this.setState({hasError: true, errorText: 'Invalid Credentials !', loading: false }));*/
+     .catch(() => this.setState({hasError: true, errorText: 'Invalid Credentials !', loading: false }));
   }
 
   render() {
@@ -89,13 +95,13 @@ export default class Login extends Component {
     }
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#01bff1' }}>
-       <View style={{ position: 'absolute', left: -120, top: -50, height: 350, width: 350, borderRadius: 500, backgroundColor: '#333'}} />
+       <View style={{ position: 'absolute', left: -120, top: -50, height: 350, width: 350, borderRadius: 500, backgroundColor: '#D2F3FC'}} />
        <Image source={require('../resources/Images/logo.png')} style={styles.loadStyle} />
-       <View style={{ position: 'absolute', bottom: 0, width: w/0.27, height: 0, backgroundColor: 'transparent', borderLeftWidth: w*2.5, borderBottomWidth: h/2, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: '#333333' }} />
+       <View style={{ position: 'absolute', bottom: 0, width: w/0.27, height: 0, backgroundColor: 'transparent', borderLeftWidth: w*2.5, borderBottomWidth: h/2, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: '#D2F3FC' }} />
        <View style={{ position: 'absolute', bottom: '15%', width:'90%', justifyContent: 'center', alignItems: 'center'}}>
-         <View style={{ width: '20%', height: '2%', backgroundColor: '#888'}} />
+         <View style={{ width: '15%', height: '2%', backgroundColor: '#888'}} />
          <Text style={{ color: '#888', fontSize: 16, padding: '5%', fontStyle: 'italic', fontFamily: 'serif', textAlign: 'center' }}>"Be the Reason someone believes in Good People"</Text>
-         <View style={{ width: '10%', height: '2%', backgroundColor: '#888'}} />
+         <View style={{ width: '15%', height: '2%', backgroundColor: '#888'}} />
        </View>
        <ProgressBarAndroid style={{ position: 'absolute', bottom: '5%', width: '100%', color: '#01bff1' }} styleAttr="Horizontal" indeterminate={true} />
       </View>
