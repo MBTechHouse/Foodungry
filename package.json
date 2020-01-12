@@ -12,6 +12,8 @@
   "dependencies": {
     "@eva-design/eva": "^1.2.0",
     "@ui-kitten/eva-icons": "^4.2.0",
+    "firebase": "^7.6.2",
+    "native-base": "2.13.4",
     "prop-types": "^15.6.0",
     "react": "16.9.0",
     "react-native": "0.61.4",
