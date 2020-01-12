@@ -10,7 +10,7 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    //firebase.auth().signOut();
+    firebase.auth().signOut();
     if (!firebase.apps.length) {
       const config = {
         apiKey: "AIzaSyDjQ8TIeuEmGzzZRcIyaIeVbe_uVtFv72Y",
