@@ -8,8 +8,18 @@ import {
   Layout,
   Text as KText
 } from 'react-native-ui-kitten';
+import firebase from 'firebase';
 
 export default class OrderList extends React.Component {
+
+  state = {
+    restaurants: []
+  }
+
+  componentDidMount() {
+   firebase.database().ref('/1FithETVAzs4Yb2iZtUPkEcqm2jXIjGnsBiVVgRPAcdc/restaurants')
+   .on('value', snapshot => this.setState({ restaurants: snapshot.val() }))
+ }
 
   getColor(r) {
     if(0.0 <= r && r < 2.0) return '#A60808'
@@ -27,7 +37,7 @@ export default class OrderList extends React.Component {
         >
 
             <Layout style={{ position:'absolute', elevation:6, left:7, height:70, width: 85, borderRadius:20 }}>
-              <Image source={rest.image} style={{ resizeMode:"stretch", height: '100%', width: '100%', borderRadius: 20 }} />
+              <Image source={{uri: rest.image}} style={{ resizeMode:"stretch", height: '100%', width: '100%', borderRadius: 20 }} />
             </Layout>
 
             <Layout style={{width:'85%', height:90, borderRadius:20, elevation: 5, padding: 5, marginLeft: '15%' }}>
@@ -58,50 +68,9 @@ export default class OrderList extends React.Component {
 
   renderItems()
   {
-    let rests = [{
-      name: "Domino's Pizza",
-      image: require('../resources/Images/rest1.jpeg'),
-      type: "Motel, Inoor Eating | Jayanagar, Bangalore",
-      cuisine: "Continental, Northindian, Italian",
-      pricing: "$200 per person | 10% person coupon",
-      rating: 4.3
-    },
-    {
-      name: "Chulha Chauki Da Dhaba",
-      image: require('../resources/Images/rest2.jpeg'),
-      type: "Cafe, Outdoor Eating | J P Nagar, Bangalore",
-      cuisine: "Fast Food, Chicken Wings, Tea",
-      pricing: "$120 per person | 50% person coupon",
-      rating: 3.2
-    },
-    {
-      name: "Starbucks",
-      image: require('../resources/Images/rest3.jpeg'),
-      type: "Cafe, Hookah | Palace Road, Bangalore",
-      cuisine: "Sandwich, South Indian, Sutta",
-      pricing: "$100 per person | 35% person coupon",
-      rating: 4.0
-    },
-    {
-      name: "Eat N Drink",
-      image: require('../resources/Images/rest4.jpeg'),
-      type: "Drive In, Inoor Eating | Uttarahalli, Bangalore",
-      cuisine: "Chinese, Japanese, Noth Indina",
-      pricing: "$75 per person | 1 + 1 on Food",
-      rating: 2.7
-    },
-    {
-      name: "Singh Da Dhaba",
-      image: require('../resources/Images/rest4.jpeg'),
-      type: "Motel, Inoor Eating | Jayanagar, Bangalore",
-      cuisine: "Cheese Burst, Pizza",
-      pricing: "$50 per person | 20% person coupon",
-      rating: 3.3
-    }];
-
-    let renderArray= []
-    for(let i=0; i<rests.length;i++)
-      renderArray.push(this.restCard(rests[i]))
+    let renderArray = [];
+    for(let i=0; i<this.state.restaurants.length;i++)
+      renderArray.push(this.restCard(this.state.restaurants[i]))
     return renderArray
   }
 

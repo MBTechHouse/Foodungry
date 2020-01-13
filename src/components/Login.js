@@ -4,6 +4,7 @@ import { Container, View, Left, Right, Button, Icon, Item, Input, Textarea } fro
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin';
 import firebase from 'firebase';
+import Quote from '../HelperComponents/Quote';
 
 let w = Dimensions.get('screen').width;
 let h = Dimensions.get('screen').height;
@@ -63,7 +64,7 @@ export default class Login extends Component {
           const credential = firebase.auth.GoogleAuthProvider.credential(null, res.accessToken)
           const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
           let userDet = firebaseUserCredential.user;
-          console.log(JSON.stringify(userDet));
+          //console.log(JSON.stringify(userDet));
           firebase.database().ref().child('users').child(userDet.uid).set({
             email: userDet.email? userDet.email: '',
             name: userDet.displayName? userDet.displayName: '',
@@ -99,7 +100,7 @@ export default class Login extends Component {
       const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
       const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
       let userDet = firebaseUserCredential.user;
-      console.log(JSON.stringify(userDet))
+      //console.log(JSON.stringify(userDet))
       firebase.database().ref().child('users').child(userDet.uid).set({
         email: userDet.email? userDet.email: '',
         name: userDet.displayName? userDet.displayName: '',
@@ -190,7 +191,7 @@ export default class Login extends Component {
        <View style={{ position: 'absolute', bottom: 0, width: w/0.27, height: 0, backgroundColor: 'transparent', borderLeftWidth: w*2.5, borderBottomWidth: h/2, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: '#D2F3FC' }} />
        <View style={{ position: 'absolute', bottom: '15%', width:'90%', justifyContent: 'center', alignItems: 'center'}}>
          <View style={{ width: '15%', height: '2%', backgroundColor: '#888'}} />
-         <Text style={{ color: '#888', fontSize: 16, padding: '5%', fontStyle: 'italic', fontFamily: 'serif', textAlign: 'center' }}>"Be the Reason someone believes in Good People"</Text>
+         <Quote />
          <View style={{ width: '15%', height: '2%', backgroundColor: '#888'}} />
        </View>
        <ProgressBarAndroid style={{ position: 'absolute', bottom: '5%', width: '100%', color: '#01bff1' }} styleAttr="Horizontal" indeterminate={true} />
