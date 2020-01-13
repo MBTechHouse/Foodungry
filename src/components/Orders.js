@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, Animated } from 'react-native';
 import { Button, Layout, Icon } from 'react-native-ui-kitten';
 import OrderCard from '../HelperComponents/OrderCard'
 import OrderList from '../HelperComponents/OrderList'
@@ -43,8 +43,36 @@ export default class Orders extends React.Component{
         subtitle: 'Lorem ipsum dolor sit amet et nuncat',
         illustration: 'https://i.imgur.com/l49aYS3l.jpg'
     }
-], Categories:{ cat1: {title:'Romantic'}, cat2:{title:'Bombat'}, cat3:{title:'Bombat'}, cat4:{title:'Bombat'}, cat5:{title:'Bombat'} }}
+], Categories:{ cat1: {title:'Romantic'}, cat2:{title:'Bombat'}, cat3:{title:'Bombat'}, cat4:{title:'Bombat'}, cat5:{title:'Bombat'} }
+, swipe:false
+}
   
+  componentWillMount()
+  {
+    this.animatedValue = new Animated.Value(0);
+  }
+ 
+  animatebackgroundLtoR(swipeVal)
+  {
+    Animated.timing(this.animatedValue, {
+      toValue: swipeVal,
+      duration:200
+    }).start();
+
+    if(!this.state.swipe)
+    this.setState({swipe:true})
+  }
+
+  animatebackgroundRtoL(swipeval)
+  {
+    Animated.timing(this.animatedValue, {
+      toValue: 0,
+      duration:200
+    }).start();
+
+    if(this.state.swipe)
+    this.setState({swipe:false})
+  }
 
   w = Dimensions.get('screen').width
   h = Dimensions.get('screen').height
@@ -56,7 +84,10 @@ export default class Orders extends React.Component{
 
   render()
   {
-    
+    const interpolateColor = this.animatedValue.interpolate({
+      inputRange: [0, 150],
+      outputRange: ['rgb(255,255,255)', 'rgb(85,194,255)']
+    })
     console.log(this.props.navigation.getParam('ordermode'))
   return(
   <View style={styles1.container}>
@@ -134,7 +165,26 @@ export default class Orders extends React.Component{
             </View>
     </View>
 
-    <View style={{ width:'100%',height:'18%'}}>
+    <View style={{width:'70%', height:'7%', flexDirection:'row', justifyContent:'space-between'}}>
+    
+    <Animated.View style={{ position:'absolute',width:'49.5%', height:'100%',backgroundColor:'#55C2FF', transform: [{translateX: this.animatedValue}], borderTopLeftRadius:(this.state.swipe)?0:10, 
+    borderBottomLeftRadius:(this.state.swipe)?0:10,borderTopRightRadius:(this.state.swipe)?10:0, borderBottomRightRadius:(this.state.swipe)?10:0, borderColor:'#55C2FF', borderWidth:3}}>
+          <Text style={{fontSize:19, fontWeight:'bold', color:'#000'}} ></Text>
+          </Animated.View>
+    <TouchableOpacity onPress={this.animatebackgroundRtoL.bind(this, this.w*(0.35))} style={{width:'49.5%', height:'100%', }}>
+        <View style={{width:'100%', height:'100%',backgroundColor:'transpaarent', alignItems:'center', justifyContent:'center', borderTopLeftRadius:10, borderBottomLeftRadius:10, borderColor:'#55C2FF', borderWidth:3}}>
+          <Text style={{fontSize:19, fontWeight:'bold', color:'#000'}} >Eat -In</Text>
+          </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={this.animatebackgroundLtoR.bind(this, this.w*(0.35))} style={{width:'49.5%', height:'100%', backgroundColor:'transparent', alignItems:'center',justifyContent:'center',
+      borderTopRightRadius:10, borderBottomRightRadius:10, borderColor:'#55C2FF', borderWidth:3}}>
+          <Text style={{fontSize:19,fontWeight:'bold', color:'#000'}} >Take away</Text>
+      </TouchableOpacity>
+
+
+    </View>
+
+    <View style={{ width:'100%',height:'18%', top:'5%'}}>
       <Text style={{fontSize:18, fontWeight:'bold',paddingLeft:'5%'}}>Top Categories</Text>
       <View style={{width:'100%', height:'100%', marginTop:'3%', }}>
       <ScrollView style={{height:'100%' }} horizontal={true}  showsHorizontalScrollIndicator={false}>
@@ -150,7 +200,7 @@ export default class Orders extends React.Component{
           y:3,
         style:{marginVertical:5, marginLeft:this.w*(0.04), marginRight:this.w*(0.04)}
     }}>
-          <TouchableOpacity style={{borderRadius:this.w*(0.06), width:this.w*(0.2), height:this.h*(0.14), backgroundColor:'#DFF2FF', alignItems:'center' , paddingTop:'13%', justifyContent:'space-around', paddingBottom:'13%'}}>
+          <TouchableOpacity style={{borderRadius:this.w*(0.06), width:this.w*(0.2), height:this.h*(0.14), backgroundColor:'#fff', alignItems:'center' , paddingTop:'13%', justifyContent:'space-around', paddingBottom:'13%'}}>
           <Image source={require('../resources/Images/heart.png')} 
     style={{width:this.w*(0.12), height:this.w*(0.12), borderRadius:this.w*(0.18)/2,shadowColor: "#000",
     shadowOffset: {
@@ -168,14 +218,7 @@ export default class Orders extends React.Component{
     </View>
     </View>
 
-    <View style={{width:'70%', height:'7%', flexDirection:'row',top:'15%', justifyContent:'space-between'}}>
-      <TouchableOpacity style={{width:'49.5%', height:'100%', backgroundColor:'#55C2FF', alignItems:'center', justifyContent:'center', borderTopLeftRadius:10, borderBottomLeftRadius:10}}>
-          <Text style={{fontSize:19, fontWeight:'600'}} >Eat -In</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={{width:'49.5%', height:'100%', backgroundColor:'#55C2FF', alignItems:'center',justifyContent:'center',borderTopRightRadius:10, borderBottomRightRadius:10}}>
-          <Text style={{fontSize:19,fontWeight:'600'}} >Take away</Text>
-      </TouchableOpacity>
-    </View>
+    
     
 
     
