@@ -16,7 +16,7 @@ export default class Signup extends Component {
       super(props);
       this.state = {
         email: '',
-        compname: '',
+        name: '',
         phone: '',
         password: '',
         rePassword: '',
@@ -57,7 +57,7 @@ export default class Signup extends Component {
             </Item>
             <Item>
                 <Icon active name='ios-person' style={{color: '#01bff1'}} />
-                <Input placeholder='Company Name' onChangeText={(text) => this.setState({compname: text})} placeholderTextColor="#888" />
+                <Input placeholder='Company Name' onChangeText={(text) => this.setState({name: text})} placeholderTextColor="#888" />
             </Item>
             <Item>
                 <Icon active name='ios-phone-portrait' style={{color: '#01bff1'}} />
@@ -121,7 +121,7 @@ export default class Signup extends Component {
       () => {
         firebase.database().ref().child('users').child(firebase.auth().currentUser.uid).set({
             email: this.state.email,
-            compname: this.state.compname,
+            name: this.state.name,
             phone: this.state.phone
           },()=>{this.props.navigation.navigate('Orders')})
     })
