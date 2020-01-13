@@ -17,6 +17,8 @@ import HomeScreen from './HomeScreen.js'
 import Login from './Login.js'
 import Signup from './Signup.js'
 
+import AddButton from '../components/BottomNavHelper/AddButton'
+
 const OrderIcon = (style) => (
   <Icon {...style} name='pie-chart-2'/>
 );
@@ -70,12 +72,65 @@ const OrderNavigator = createStackNavigator(
 );
 
 const BottomNavigator = createBottomTabNavigator({
-  Orders: OrderNavigator,
-  Search: Search,
-  Profile: Profile
+  Orders: {
+    screen: OrderNavigator,
+    navigationOptions: ({navigation}) =>( {
+      tabBarIcon:({ focused, horizontal, tintColor }) => {
+        console.log(navigation.state.index, tintColor)
+        if (navigation.state.routeName === "Orders") {
+          return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
+        }
+        
+    } 
+      
+    })
+  },
+  Search: {
+    screen: Search,
+    navigationOptions: ({navigation}) =>({
+      tabBarIcon:({ focused, horizontal, tintColor }) => {
+        if (navigation.state.routeName === "Search") {
+          return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
+        }
+    } 
+      
+    })
+  },
+  Add:{
+    screen: ()=>null,
+    navigationOptions: {
+      tabBarIcon: <AddButton />
+    }
+  },
+  Profile: {
+    screen: Profile,
+    navigationOptions: ({navigation}) =>({
+      tabBarIcon:({ focused, horizontal, tintColor }) => {
+        if (navigation.state.routeName === "Profile") {
+          return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
+        }
+    } 
+      
+    })
+  },
+  Schedule: {
+    screen: Profile,
+    navigationOptions: ({navigation}) =>({
+      tabBarIcon:({ focused, horizontal, tintColor }) => {
+        console.log(navigation.state.index)
+        if (navigation.state.routeName === "Schedule") {
+          return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
+        }
+    } 
+      
+    })
+  }
 }, {
   initialRouteName: 'Orders',
-  tabBarComponent: BottomNavigationShowcase,
+  tabBarOptions:{  showLabel:false, 
+  
+    activeTintColor: '#55c2ff',
+    inactiveTintColor: '#272727'},
 });
 
 const MainNav = createStackNavigator({
