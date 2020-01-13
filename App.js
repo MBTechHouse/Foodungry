@@ -7,7 +7,6 @@ import {BottomNav} from './src/components/BottomNav';
 import firebase from 'firebase';
 
 class App extends React.Component {
-
   constructor(props) {
     super(props);
     if (!firebase.apps.length) {
