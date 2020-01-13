@@ -177,15 +177,22 @@ WHEN YOU ARE ANGRY, BE SILENT.
 YOU GET WHAT YOU GIVE.
 ATTRACT THEM BY THE WAY YOU LIVE.
 THE BEAUTY YOU SEE IN ME IS REFLECTION OF YOU.
- BUILD IN SILENCE AND MOVE IN SILENCE.
+BUILD IN SILENCE AND MOVE IN SILENCE.
 JUST LIKE THE MOON WE GO THROUGH PHASES.
 DO WHAT MAKES YOU FEEL FREE.`.split('\n');
 
 export default class Quote extends React.Component {
+
+  getQuote() {
+    let q = quotes[Math.floor(Math.random() * quotes.length)].toLowerCase();
+    q = '" ' + q.charAt(0).toUpperCase() + q.slice(1) + ' "';
+    return q;
+  }
+
   render() {
     return (
       <Text style={{ color: '#888', fontSize: 16, padding: '5%', fontStyle: 'italic', fontFamily: 'serif', textAlign: 'center' }}>
-        {'" ' + quotes[Math.floor(Math.random() * quotes.length)].toLowerCase() + ' "'}
+        {this.getQuote()}
       </Text>
     );
   }
