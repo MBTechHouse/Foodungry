@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet,Text, View, Image,TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet,Text, View, Image,TouchableOpacity, ScrollView, Linking } from 'react-native';
 import {
   Button,
   Icon,
@@ -13,12 +13,12 @@ import firebase from 'firebase';
 export default class OrderList extends React.Component {
 
   state = {
-    restaurants: []
+    list: [],
+    listItems: {}
   }
 
-  componentDidMount() {
-   firebase.database().ref('/1FithETVAzs4Yb2iZtUPkEcqm2jXIjGnsBiVVgRPAcdc/restaurants')
-   .on('value', snapshot => this.setState({ restaurants: snapshot.val() }))
+  static getDerivedStateFromProps(props,state) {
+   return({ list: props.list, listItems: props.listItems })
  }
 
   getColor(r) {
@@ -52,7 +52,7 @@ export default class OrderList extends React.Component {
         </TouchableOpacity>
 
         <Layout style={{ width: '5%', height: 90, marginLeft: '2%' }}>
-          <TouchableOpacity style={{ height: 30, width: '100%' }}>
+          <TouchableOpacity style={{ height: 30, width: '100%' }} onPress={this.mapClick.bind(this, rest.latlng, rest.name)}>
           <Image source={require('../resources/Images/mapIcon.png')} style={{ resizeMode:"contain", height: '100%', width: '100%' }} />
           </TouchableOpacity>
           <Layout style={{ width: '100%', height: 60, elevation: 5, borderRadius: 20, marginTop: 2, justifyContent: 'flex-end' }}>
@@ -66,11 +66,25 @@ export default class OrderList extends React.Component {
     )
   }
 
+  mapClick(latlng, name) {
+    let lat = Number(latlng.split(",")[0].trim());
+    let lng = Number(latlng.split(",")[1].trim());
+    const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+    const latLng = `${lat},${lng}`;
+    const label = this.state.marker.title;
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`
+    });
+    Linking.openURL(url);
+  }
+
   renderItems()
   {
     let renderArray = [];
-    for(let i=0; i<this.state.restaurants.length;i++)
-      renderArray.push(this.restCard(this.state.restaurants[i]))
+    //console.log(this.state.list)
+    for(let i=0; i<this.state.list.length;i++)
+      renderArray.push(this.restCard(this.state.listItems[this.state.list[i]]))
     return renderArray
   }
 

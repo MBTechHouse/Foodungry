@@ -80,9 +80,9 @@ const BottomNavigator = createBottomTabNavigator({
         if (navigation.state.routeName === "Orders") {
           return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
         }
-        
-    } 
-      
+
+    }
+
     })
   },
   Search: {
@@ -92,8 +92,8 @@ const BottomNavigator = createBottomTabNavigator({
         if (navigation.state.routeName === "Search") {
           return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
         }
-    } 
-      
+    }
+
     })
   },
   Add:{
@@ -109,8 +109,8 @@ const BottomNavigator = createBottomTabNavigator({
         if (navigation.state.routeName === "Profile") {
           return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
         }
-    } 
-      
+    }
+
     })
   },
   Schedule: {
@@ -121,14 +121,14 @@ const BottomNavigator = createBottomTabNavigator({
         if (navigation.state.routeName === "Schedule") {
           return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
         }
-    } 
-      
+    }
+
     })
   }
 }, {
   initialRouteName: 'Orders',
-  tabBarOptions:{  showLabel:false, 
-  
+  tabBarOptions:{  showLabel:false,
+
     activeTintColor: '#55c2ff',
     inactiveTintColor: '#272727'},
 });
