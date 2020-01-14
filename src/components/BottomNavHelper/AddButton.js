@@ -1,11 +1,12 @@
 import React from 'react'
 import {View, Text, TouchableHighlight,Image, Dimensions, Animated } from 'react-native'
-import {BoxShadow} from 'react-native-shadow'
-export default class AddButton extends React.Component{
+import {BoxShadow} from 'react-native-shadow';
+import { withNavigation } from 'react-navigation';
 
+class AddButton extends React.Component{
 
     buttonSize = new Animated.Value(1)
-    handlePress = () => {
+    handlePress() {
         Animated.sequence([
             Animated.timing(this.buttonSize,{
                 toValue: 0.95,
@@ -15,7 +16,7 @@ export default class AddButton extends React.Component{
                 toValue: 1,
             })
         ]).start()
-
+        this.props.navigation.navigate('Orders');
     }
 
     render()
@@ -28,9 +29,9 @@ export default class AddButton extends React.Component{
           },
           shadowOpacity: 0.37,
           shadowRadius: 5,
-          
+
           elevation: 12,}}>
-                    <TouchableHighlight underlayColor="transparent" onPress={this.handlePress}>
+                    <TouchableHighlight underlayColor="transparent" onPress={() => this.handlePress()}>
                     <BoxShadow setting={{
       width:75,
       height:75,
@@ -52,3 +53,4 @@ export default class AddButton extends React.Component{
     }
 }
 
+export default withNavigation(AddButton);

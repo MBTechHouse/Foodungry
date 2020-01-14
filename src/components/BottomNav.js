@@ -10,6 +10,7 @@ import {createStackNavigator} from 'react-navigation-stack'
 import {createAppContainer} from 'react-navigation'
 import Orders from './Orders'
 import Search from './Search'
+import Victor from './Victor'
 import Profile from './Profile'
 import OrderItems from './OrderItems'
 import ViewCart from './ViewCart'
@@ -18,47 +19,6 @@ import Login from './Login.js'
 import Signup from './Signup.js'
 
 import AddButton from '../components/BottomNavHelper/AddButton'
-
-const OrderIcon = (style) => (
-  <Icon {...style} name='pie-chart-2'/>
-);
-
-const SearchIcon = (style) => (
-  <Icon {...style} name='search'/>
-);
-
-const ProfileIcon = (style) => (
-  <Icon {...style} name='person'/>
-);
-
-
-export const BottomNavigationShowcase = (props) => {
-
-  const onTabSelect = (selectedIndex) => {
-    const { [selectedIndex]: selectedRoute } = props.navigation.state.routes;
-    props.navigation.navigate(selectedRoute.routeName);
-  };
-
-  return (
-    <BottomNavigation
-        appearance="noIndicator"
-        selectedIndex={props.navigation.state.index}
-        onSelect={onTabSelect}>
-        <BottomNavigationTab
-          title='ORDERS'
-          icon={OrderIcon}
-        />
-        <BottomNavigationTab
-          title='SEARCH'
-          icon={SearchIcon}
-        />
-        <BottomNavigationTab
-          title='PROFILE'
-          icon={ProfileIcon}
-        />
-      </BottomNavigation>
-   );
- }
 
 const OrderNavigator = createStackNavigator(
   {
@@ -72,13 +32,13 @@ const OrderNavigator = createStackNavigator(
 );
 
 const BottomNavigator = createBottomTabNavigator({
-  Orders: {
-    screen: OrderNavigator,
+  Victor: {
+    screen: Victor,
     navigationOptions: ({navigation}) =>( {
       tabBarIcon:({ focused, horizontal, tintColor }) => {
         console.log(navigation.state.index, tintColor)
-        if (navigation.state.routeName === "Orders") {
-          return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
+        if (navigation.state.routeName === "Victor") {
+          return <Icon name='people-outline' width={25} height={25} fill={tintColor} />
         }
 
     }
@@ -90,36 +50,36 @@ const BottomNavigator = createBottomTabNavigator({
     navigationOptions: ({navigation}) =>({
       tabBarIcon:({ focused, horizontal, tintColor }) => {
         if (navigation.state.routeName === "Search") {
-          return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
+          return <Icon name='search' width={25} height={25} fill={tintColor} />
         }
     }
 
     })
   },
-  Add:{
-    screen: ()=>null,
+  Orders:{
+    screen: OrderNavigator,
     navigationOptions: {
       tabBarIcon: <AddButton />
     }
+  },
+  Cart: {
+    screen: ViewCart,
+    navigationOptions: ({navigation}) =>({
+      tabBarIcon:({ focused, horizontal, tintColor }) => {
+        if (navigation.state.routeName === "Cart") {
+          return <Icon name='shopping-cart-outline' width={25} height={25} fill={tintColor} />
+        }
+    }
+
+    })
   },
   Profile: {
     screen: Profile,
     navigationOptions: ({navigation}) =>({
       tabBarIcon:({ focused, horizontal, tintColor }) => {
-        if (navigation.state.routeName === "Profile") {
-          return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
-        }
-    }
-
-    })
-  },
-  Schedule: {
-    screen: Profile,
-    navigationOptions: ({navigation}) =>({
-      tabBarIcon:({ focused, horizontal, tintColor }) => {
         console.log(navigation.state.index)
-        if (navigation.state.routeName === "Schedule") {
-          return <Icon name='pie-chart-2' width={25} height={25} fill={tintColor} />
+        if (navigation.state.routeName === "Profile") {
+          return <Icon name='person' width={25} height={25} fill={tintColor} />
         }
     }
 
@@ -127,8 +87,7 @@ const BottomNavigator = createBottomTabNavigator({
   }
 }, {
   initialRouteName: 'Orders',
-  tabBarOptions:{  showLabel:false,
-
+  tabBarOptions:{  showLabel: false,
     activeTintColor: '#55c2ff',
     inactiveTintColor: '#272727'},
 });

@@ -26,11 +26,11 @@ export default class ViewCart extends React.Component{
 
   renderCartButton(key,item)
   {
-    
+
     if(item.quantity == 0)
     {
       return <TouchableOpacity style={{borderRadius:4,paddingLeft:'5.2%',paddingRight:'5.2%',paddingTop:'1%', paddingBottom:'1%', backgroundColor:'#fff',
-      borderWidth:1, borderColor:'#bdbdbd', height:'40%'}} 
+      borderWidth:1, borderColor:'#bdbdbd', height:'40%'}}
       onPress={()=>{
         let cart = this.state.cart
         let totalItems = this.state.totalItems
@@ -44,7 +44,7 @@ export default class ViewCart extends React.Component{
         this.setState({cart:cart, totalPrice:totalPrice, totalItems:totalItems})}}>
         <Text style={{color:'#7cb342', fontWeight:'bold'}}>ADD +</Text>
         </TouchableOpacity>
-    } 
+    }
     //paddingLeft:'5.2%',paddingRight:'5.2%',paddingTop:'1%', paddingBottom:'1%',
     else
     {
@@ -60,7 +60,7 @@ export default class ViewCart extends React.Component{
           cart[key] = cartItem
           totalItems = totalItems - 1
           totalPrice = totalPrice - item.actualPrice
-         
+
           if(cart[key].quantity==0)
           {
             delete cart[key]
@@ -72,7 +72,7 @@ export default class ViewCart extends React.Component{
         <Text style={{color:'red', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>-</Text>
         </TouchableOpacity>
         <Text style={{color:'#272727', fontWeight:'bold', paddingLeft:'2.8%', paddingRight:'2.8%',paddingTop:'1%', paddingBottom:'1%', backgroundColor:'#e8eaf6'}}>{item.quantity}</Text>
-        <TouchableOpacity style={{color:'#7cb342', fontWeight:'bold'}} 
+        <TouchableOpacity style={{color:'#7cb342', fontWeight:'bold'}}
         onPress={()=>{
           let cart = this.state.cart
           let totalItems = this.state.totalItems
@@ -86,7 +86,7 @@ export default class ViewCart extends React.Component{
         }}>
         <Text style={{color:'#7cb342', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>+</Text>
         </TouchableOpacity>
-      </Layout> 
+      </Layout>
     }
   }
 
@@ -94,8 +94,12 @@ export default class ViewCart extends React.Component{
   {
 
     var items = []
-    var stateItems = this.state.cart
-    
+    var stateItems = [];
+    if(this.state.cart)
+      stateItems = this.state.cart;
+    else
+      return <Text style={{ fontSize: 18, alignItems: 'center', fontFamily: 'serif', marginTop: '10%' }}>No items in Cart</Text>
+
     Object.entries(stateItems).forEach(([key,item]) => {
       items.push(<Layout style={{width:'100%', flexDirection:'row', height:100, marginTop:'3%', backgroundColor:'#FFFFFF'}} >
         <Layout style={{width:'60%' }}>
@@ -130,12 +134,12 @@ export default class ViewCart extends React.Component{
     <Layout style={{marginLeft:'6%'}}>
       {this.renderItemList()}
     </Layout>
-    
+
     <Layout style={{height:this.screenHeight*0.1}}>
       <Text></Text>
     </Layout>
 
-    
+
   </ScrollView>
   <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#598BFF',
                              borderTopLeftRadius:10, borderTopRightRadius:10, flexDirection:"row"}}>
@@ -148,8 +152,8 @@ export default class ViewCart extends React.Component{
           <Icon name='arrow-right' width={20} height={20} fill='#fff' />
         </Layout>
     </TouchableOpacity>
-  
-      
+
+
   </View>
   )
   }

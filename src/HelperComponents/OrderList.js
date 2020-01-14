@@ -71,10 +71,9 @@ export default class OrderList extends React.Component {
     let lng = Number(latlng.split(",")[1].trim());
     const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
     const latLng = `${lat},${lng}`;
-    const label = this.state.marker.title;
     const url = Platform.select({
-      ios: `${scheme}${label}@${latLng}`,
-      android: `${scheme}${latLng}(${label})`
+      ios: `${scheme}${name}@${latLng}`,
+      android: `${scheme}${latLng}(${name})`
     });
     Linking.openURL(url);
   }
@@ -82,8 +81,7 @@ export default class OrderList extends React.Component {
   renderItems()
   {
     let renderArray = [];
-    //console.log(this.state.list)
-    for(let i=0; i<this.state.list.length;i++)
+    for(let i=0; i<this.state.list.length; i++)
       renderArray.push(this.restCard(this.state.listItems[this.state.list[i]]))
     return renderArray
   }
