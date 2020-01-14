@@ -7,16 +7,21 @@ class AddButton extends React.Component{
 
     buttonSize = new Animated.Value(1)
     handlePress() {
+        console.log("Animation - Foodungry Bottom Nav")
         Animated.sequence([
             Animated.timing(this.buttonSize,{
                 toValue: 0.95,
-                duration:100
+                duration:200
             }),
             Animated.timing(this.buttonSize,{
                 toValue: 1,
             })
-        ]).start()
-        this.props.navigation.navigate('Orders');
+        ]).start() 
+        setTimeout(()=>
+        {
+
+            this.props.navigation.navigate('Orders');
+        },200)
     }
 
     render()

@@ -89,9 +89,9 @@ export default class OrderList extends React.Component {
   render()
   {
   return (
-    <ScrollView style={{width:'100%', height:'100%'}}>
+    <View style={{width:'100%', height:'100%'}}>
       {this.renderItems()}
-    </ScrollView>
+    </View>
   );
   }
 }
