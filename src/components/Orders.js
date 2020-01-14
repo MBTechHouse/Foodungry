@@ -18,6 +18,7 @@ import SliderEntry from '../components/carousel/SliderEntry';
 import {BoxShadow} from 'react-native-shadow';
 import styles, {colors} from '../components/carousel/index.style';
 import {sliderWidth, itemWidth} from '../components/carousel/SliderEntry.style';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import firebase from 'firebase';
 
 export default class Orders extends React.Component {
@@ -191,8 +192,8 @@ export default class Orders extends React.Component {
               hey
             </Text>
             </TouchableOpacity>
-        
-             
+
+
           }
           else
           {
@@ -216,10 +217,10 @@ export default class Orders extends React.Component {
     let cats = [];
 
     if (this.state.appData.categories) cats = this.state.appData.categories;
-    if (this.state.appData.categories) 
+    if (this.state.appData.categories)
     {
     for(let i=0; i<cats.length;i=i+2)
-    { 
+    {
       let temp_first = cats[i]
       let temp_second = cats[i+1]
       items.push(
@@ -263,14 +264,270 @@ export default class Orders extends React.Component {
             </Text>
           </TouchableOpacity>
         {this.getSecondFunc(temp_second)}
-        
+
         </View>
       );
     }
   }
-
-
     return items;
+  }
+
+  getForeground() {
+    return (
+      <View>
+      <View style={{width: '100%', height: this.h*(0.42)}}>
+        <Layout style={styles1.locationHeader}>
+          <Layout
+            style={{
+              width: '78%',
+              backgroundColor: 'transparent',
+              justifyContent: 'space-around',
+              height: this.h*(0.11),
+            }}>
+            <Layout
+              style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
+              <TouchableOpacity
+                style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    fontSize: 20,
+                    color: '#272727',
+                    fontWeight: 'bold',
+                    marginRight: '2%',
+                    marginLeft: '4%',
+                  }}>
+                  Home Location
+                </Text>
+                <Icon
+                  name="edit-outline"
+                  width={this.w * 0.06}
+                  height={this.w * 0.06}
+                  fill="#272727"
+                />
+              </TouchableOpacity>
+            </Layout>
+            <Layout
+              style={{
+                flexDirection: 'row',
+                width: '95%',
+                height: this.h * 0.06,
+                backgroundColor: 'transparent',
+              }}>
+              <Layout
+                style={{
+                  width: '15%',
+                  height: '100%',
+                  borderTopLeftRadius: 20,
+                  borderBottomLeftRadius: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Icon
+                  name="search-outline"
+                  width={25}
+                  height={25}
+                  fill="#797d7f"
+                />
+              </Layout>
+              <Layout
+                style={{
+                  width: '85%',
+                  height: '100%',
+                  borderTopRightRadius: 20,
+                  borderBottomRightRadius: 20,
+                  justifyContent: 'center',
+                }}>
+                <TextInput
+                  style={{
+                    fontSize: 18,
+                    color: '#797d7f',
+                    width: '100%',
+                    height: '150%',
+                  }}
+                  placeholder="Search restaurants"
+                  placeholderTextColor={'#797d7f'}
+                />
+              </Layout>
+            </Layout>
+          </Layout>
+
+          <Layout
+            style={{
+              width: '20%',
+              height: this.h*(0.11),
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+            }}>
+            <BoxShadow
+              setting={{
+                width: this.w * 0.18,
+                height: this.w * 0.18,
+                color: '#000',
+                border: 4,
+                radius: (this.w * 0.18) / 2,
+                opacity: 0.18,
+                x: 0,
+                y: 2,
+                style: {marginVertical: 5},
+              }}>
+              <Image
+                source={require('../resources/Images/Bhargav1.jpg')}
+                style={{
+                  width: this.w * 0.18,
+                  height: this.w * 0.18,
+                  borderRadius: (this.w * 0.18) / 2,
+                }}
+              />
+            </BoxShadow>
+          </Layout>
+        </Layout>
+
+        <View
+          style={{
+            position: 'absolute',
+            top: this.h*(0.095),
+            elevation: 20,
+            paddingLeft: '10%',
+          }}>
+          <Carousel
+            data={this.state.appData.banners}
+            renderItem={this._renderItem}
+            sliderWidth={sliderWidth}
+            itemWidth={itemWidth}
+            inactiveSlideScale={0.95}
+            inactiveSlideOpacity={1}
+            enableMomentum={true}
+            activeSlideAlignment={'start'}
+            containerCustomStyle={{
+              marginTop: 15,
+              overflow: 'visible', // for custom animations
+            }}
+            contentContainerCustomStyle={{
+              paddingVertical: 10, // for custom animation
+            }}
+            activeAnimationType={'spring'}
+            activeAnimationOptions={{
+              friction: 4,
+              tension: 40,
+            }}
+            hasParallaxImages={true}
+          />
+        </View>
+      </View>
+
+      <View
+        style={{
+          width: '70%',
+          height: this.h*(0.065),
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignSelf: 'center',
+        }}>
+        <Animated.View
+          style={{
+            position: 'absolute',
+            width: '49.5%',
+            height: '100%',
+            backgroundColor: '#55C2FF',
+            transform: [{translateX: this.animatedValue}],
+            borderTopLeftRadius: this.state.swipe ? 0 : 10,
+            borderBottomLeftRadius: this.state.swipe ? 0 : 10,
+            borderTopRightRadius: this.state.swipe ? 10 : 0,
+            borderBottomRightRadius: this.state.swipe ? 10 : 0,
+            borderColor: '#55C2FF',
+            borderWidth: 3,
+          }}>
+          <Text
+            style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}></Text>
+        </Animated.View>
+        <TouchableOpacity
+          onPress={this.animatebackgroundRtoL.bind(this, this.w * 0.35)}
+          style={{width: '49.5%', height: '100%'}}>
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'transpaarent',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderTopLeftRadius: 10,
+              borderBottomLeftRadius: 10,
+              borderColor: '#55C2FF',
+              borderWidth: 2,
+            }}>
+            <Text style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}>
+              Eat -In
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={this.animatebackgroundLtoR.bind(this, this.w * 0.35)}
+          style={{
+            width: '49.5%',
+            height: '100%',
+            backgroundColor: 'transparent',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderTopRightRadius: 10,
+            borderBottomRightRadius: 10,
+            borderColor: '#55C2FF',
+            borderWidth: 2,
+          }}>
+          <Text style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}>
+            Take away
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{width: '100%', height: this.h*(0.23), top: this.h*(0.019)}}>
+        <Text style={{fontSize: 18, fontWeight: 'bold', paddingLeft: '5%'}}>
+          Categories
+        </Text>
+        <View style={{width: '100%', height: '100%', marginTop: '3%'}}>
+          <ScrollView
+            style={{height: '100%'}}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}>
+            {this.getCategories()}
+          </ScrollView>
+        </View>
+      </View>
+      </View>
+    );
+  }
+
+  stickyHeader() {
+    return (
+      <View style={{ backgroundColor: '#55C2FF', borderBottomLeftRadius: 30 }}>
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}>
+          <Text
+            numberOfLines={1}
+            style={{
+              fontSize: 20,
+              color: '#272727',
+              fontWeight: 'bold',
+              marginRight: '2%',
+              marginLeft: '4%',
+            }}>
+            Home Location
+          </Text>
+          <Icon
+            name="edit-outline"
+            width={this.w * 0.06}
+            height={this.w * 0.06}
+            fill="#272727"
+          />
+        </TouchableOpacity>
+        <ScrollView
+          style={{height: this.h*0.16, width: '100%'}}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}>
+          {this.getCategories()}
+        </ScrollView>
+      </View>
+    );
   }
 
   render() {
@@ -280,227 +537,14 @@ export default class Orders extends React.Component {
     });
     console.log(this.props.navigation.getParam('ordermode'));
     return (
-        <ScrollView style={styles1.container} contentContainerStyle={{flexGrow:1}}>
-          <View style={{width: '100%', height: this.h*(0.42)}}>
-            <Layout style={styles1.locationHeader}>
-              <Layout
-                style={{
-                  width: '78%',
-                  backgroundColor: 'transparent',
-                  justifyContent: 'space-around',
-                  height: this.h*(0.11),
-                }}>
-                <Layout
-                  style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
-                  <TouchableOpacity
-                    style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text
-                      numberOfLines={1}
-                      style={{
-                        fontSize: 20,
-                        color: '#272727',
-                        fontWeight: 'bold',
-                        marginRight: '2%',
-                        marginLeft: '4%',
-                      }}>
-                      Home Location
-                    </Text>
-                    <Icon
-                      name="edit-outline"
-                      width={this.w * 0.06}
-                      height={this.w * 0.06}
-                      fill="#272727"
-                    />
-                  </TouchableOpacity>
-                </Layout>
-                <Layout
-                  style={{
-                    flexDirection: 'row',
-                    width: '95%',
-                    height: this.h * 0.06,
-                    backgroundColor: 'transparent',
-                  }}>
-                  <Layout
-                    style={{
-                      width: '15%',
-                      height: '100%',
-                      borderTopLeftRadius: 20,
-                      borderBottomLeftRadius: 20,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Icon
-                      name="search-outline"
-                      width={25}
-                      height={25}
-                      fill="#797d7f"
-                    />
-                  </Layout>
-                  <Layout
-                    style={{
-                      width: '85%',
-                      height: '100%',
-                      borderTopRightRadius: 20,
-                      borderBottomRightRadius: 20,
-                      justifyContent: 'center',
-                    }}>
-                    <TextInput
-                      style={{
-                        fontSize: 18,
-                        color: '#797d7f',
-                        width: '100%',
-                        height: '150%',
-                      }}
-                      placeholder="Search restaurants"
-                      placeholderTextColor={'#797d7f'}
-                    />
-                  </Layout>
-                </Layout>
-              </Layout>
-
-              <Layout
-                style={{
-                  width: '20%',
-                  height: this.h*(0.11),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'transparent',
-                }}>
-                <BoxShadow
-                  setting={{
-                    width: this.w * 0.18,
-                    height: this.w * 0.18,
-                    color: '#000',
-                    border: 4,
-                    radius: (this.w * 0.18) / 2,
-                    opacity: 0.18,
-                    x: 0,
-                    y: 2,
-                    style: {marginVertical: 5},
-                  }}>
-                  <Image
-                    source={require('../resources/Images/Bhargav1.jpg')}
-                    style={{
-                      width: this.w * 0.18,
-                      height: this.w * 0.18,
-                      borderRadius: (this.w * 0.18) / 2,
-                    }}
-                  />
-                </BoxShadow>
-              </Layout>
-            </Layout>
-
-            <View
-              style={{
-                position: 'absolute',
-                top: this.h*(0.095),
-                elevation: 20,
-                paddingLeft: '10%',
-              }}>
-              <Carousel
-                data={this.state.appData.banners}
-                renderItem={this._renderItem}
-                sliderWidth={sliderWidth}
-                itemWidth={itemWidth}
-                inactiveSlideScale={0.95}
-                inactiveSlideOpacity={1}
-                enableMomentum={true}
-                activeSlideAlignment={'start'}
-                containerCustomStyle={{
-                  marginTop: 15,
-                  overflow: 'visible', // for custom animations
-                }}
-                contentContainerCustomStyle={{
-                  paddingVertical: 10, // for custom animation
-                }}
-                activeAnimationType={'spring'}
-                activeAnimationOptions={{
-                  friction: 4,
-                  tension: 40,
-                }}
-                hasParallaxImages={true}
-              />
-            </View>
-          </View>
-
-          <View
-            style={{
-              width: '70%',
-              height: this.h*(0.065),
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignSelf: 'center',
-            }}>
-            <Animated.View
-              style={{
-                position: 'absolute',
-                width: '49.5%',
-                height: '100%',
-                backgroundColor: '#55C2FF',
-                transform: [{translateX: this.animatedValue}],
-                borderTopLeftRadius: this.state.swipe ? 0 : 10,
-                borderBottomLeftRadius: this.state.swipe ? 0 : 10,
-                borderTopRightRadius: this.state.swipe ? 10 : 0,
-                borderBottomRightRadius: this.state.swipe ? 10 : 0,
-                borderColor: '#55C2FF',
-                borderWidth: 3,
-              }}>
-              <Text
-                style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}></Text>
-            </Animated.View>
-            <TouchableOpacity
-              onPress={this.animatebackgroundRtoL.bind(this, this.w * 0.35)}
-              style={{width: '49.5%', height: '100%'}}>
-              <View
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  backgroundColor: 'transpaarent',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderTopLeftRadius: 10,
-                  borderBottomLeftRadius: 10,
-                  borderColor: '#55C2FF',
-                  borderWidth: 2,
-                }}>
-                <Text style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}>
-                  Eat -In
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.animatebackgroundLtoR.bind(this, this.w * 0.35)}
-              style={{
-                width: '49.5%',
-                height: '100%',
-                backgroundColor: 'transparent',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderTopRightRadius: 10,
-                borderBottomRightRadius: 10,
-                borderColor: '#55C2FF',
-                borderWidth: 2,
-              }}>
-              <Text style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}>
-                Take away
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={{width: '100%', height: this.h*(0.23), top: this.h*(0.019)}}>
-            <Text style={{fontSize: 18, fontWeight: 'bold', paddingLeft: '5%'}}>
-              Top Categories
-            </Text>
-            <View style={{width: '100%', height: '100%', marginTop: '3%'}}>
-              <ScrollView
-                style={{height: '100%'}}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                {this.getCategories()}
-              </ScrollView>
-            </View>
-          </View>
-
+        <ParallaxScrollView
+          style={styles1.container} contentContainerStyle={{flexGrow:1}}
+          backgroundColor={'white'}
+          parallaxHeaderHeight={this.h*0.715}
+          stickyHeaderHeight={this.h*0.2}
+          renderForeground={() => this.getForeground()}
+          renderStickyHeader={() => this.stickyHeader()}
+        >
           <View style={{width: '100%', height: (this.state.preview)?this.h*(0.23):'0%'}}>
             <View style={{width: '100%', height: (this.state.preview)?'100%':'0%'}}>
               <ScrollView
@@ -514,7 +558,7 @@ export default class Orders extends React.Component {
             </View>
           </View>
 
-          
+
 
           <View style={{width:'100%', top:this.h*(0.01), marginBottom:this.h*(0.03)}}>
             <OrderList
@@ -523,8 +567,7 @@ export default class Orders extends React.Component {
               listItems={this.state.appData[this.state.listName]}
             />
           </View>
-           
-        </ScrollView>
+        </ParallaxScrollView>
     );
   }
 }
