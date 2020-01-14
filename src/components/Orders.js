@@ -9,6 +9,7 @@ import {
   Dimensions,
   ScrollView,
   Animated,
+  ImageBackground
 } from 'react-native';
 import {Button, Layout, Icon} from 'react-native-ui-kitten';
 import OrderCard from '../HelperComponents/OrderCard';
@@ -109,7 +110,10 @@ export default class Orders extends React.Component {
               paddingBottom: '13%',
             }}
             onPress={() =>{
-              if(this.state.cuurentCategoryId !== cat.categoryId)
+
+              if(cat.fromNode === "collections")
+              {
+                if(this.state.cuurentCategoryId !== cat.categoryId )
               this.setState({
                 preview:true,
                 cuurentCategoryId: cat.categoryId
@@ -121,6 +125,13 @@ export default class Orders extends React.Component {
                   cuurentCategoryId: null
                 })
               }
+              }
+              else
+              {
+                this.setState({ list: cat.itemIds.split(','), listName: cat.fromNode, preview:false, cuurentCategoryId: null })
+              }
+
+              
             }
             }>
             <Image
@@ -162,21 +173,10 @@ export default class Orders extends React.Component {
                 marginLeft:this.w*(0.08),
                 marginRight:this.w*(0.08)
               }}
-              onPress={() =>{
-                if(this.state.cuurentCategoryId !== temp_second['categoryId'])
-                this.setState({
-                  preview:true,
-                  cuurentCategoryId: temp_second['categoryId']
-                })
-                else
-                {
-                  this.setState({
-                    preview:false,
-                    cuurentCategoryId: null
-                  })
-                }
-              }
-              }>
+              onPress={()=>{
+                this.setState({list: temp_second['restIds'].split(','), listName: 'restaurants' })
+              }}
+              >
               <Image
                 source={{uri: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80'}}
                 style={{
@@ -187,9 +187,11 @@ export default class Orders extends React.Component {
                 }}
                 resizeMode="cover"
               />
-              <Text style={{fontWeight:'bold', fontSize:18, position:'absolute', color:'#fff', paddingLeft:'42%', paddingTop:'10%'}}>
-              hey
-            </Text>
+              <View style={{position:'absolute',  width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>
+              <Text style={{fontWeight:'bold', fontSize:18, color:'#fff'}}>
+                {temp_second['name']}
+              </Text>
+            </View>
             </TouchableOpacity>
         
              
@@ -201,12 +203,12 @@ export default class Orders extends React.Component {
               borderRadius: this.w * 0.01,
               width: this.w * 0.35,
               height: this.h * 0.08,
-              backgroundColor: '#d3d3d3',
+              backgroundColor: '#fff',
               marginLeft:this.w*(0.08),
               marginRight:this.w*(0.08)
             }}
             >
-            <Text> See All</Text>
+            <Text></Text>
           </TouchableOpacity>
           }
   }
@@ -214,10 +216,15 @@ export default class Orders extends React.Component {
   getPreview() {
     let items = [];
     let cats = [];
-
-    if (this.state.appData.categories) cats = this.state.appData.categories;
     if (this.state.appData.categories) 
     {
+      if(this.state.cuurentCategoryId)
+      {let itemKeys = this.state.appData.categories[this.state.cuurentCategoryId]['itemIds'].split(',')
+      console.log("itemKeys",itemKeys)
+        itemKeys.forEach(element => {
+          cats.push(this.state.appData.collections[element])
+        });
+      }
     for(let i=0; i<cats.length;i=i+2)
     { 
       let temp_first = cats[i]
@@ -233,21 +240,11 @@ export default class Orders extends React.Component {
               marginLeft:this.w*(0.08),
               marginRight:this.w*(0.08)
             }}
-            onPress={() =>{
-              if(this.state.cuurentCategoryId !== temp_first['categoryId'])
-              this.setState({
-                preview:true,
-                cuurentCategoryId: temp_first['categoryId']
-              })
-              else
-              {
-                this.setState({
-                  preview:false,
-                  cuurentCategoryId: null
-                })
-              }
-            }
-            }>
+
+            onPress={()=>{
+              this.setState({list: temp_first['restIds'].split(','), listName: 'restaurants' })
+            }}
+            >
             <Image
               source={{uri: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80'}}
               style={{
@@ -258,9 +255,11 @@ export default class Orders extends React.Component {
               }}
               resizeMode="cover"
             />
-            <Text style={{fontWeight:'bold', fontSize:18, position:'absolute', color:'#fff', paddingLeft:'42%', paddingTop:'10%'}}>
-              hey
-            </Text>
+            <View style={{position:'absolute',  width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>
+              <Text style={{fontWeight:'bold', fontSize:18, color:'#fff'}}>
+                {temp_first['name']}
+              </Text>
+            </View>
           </TouchableOpacity>
         {this.getSecondFunc(temp_second)}
         
