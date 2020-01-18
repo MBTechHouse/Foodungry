@@ -99,7 +99,7 @@ export default class ViewCart extends React.Component{
     if(this.state.cart)
       stateItems = this.state.cart;
     else
-      return <Text style={{ fontSize: 18, alignItems: 'center', fontFamily: 'serif', marginTop: '10%' }}>CART IS EMPTY</Text>
+      return <Text style={{ fontSize: 18, alignItems: 'center', color: '#aaa', fontFamily: 'serif', marginLeft: '28%', marginTop: '10%' }}>CART IS EMPTY</Text>
 
     Object.entries(stateItems).forEach(([key,item]) => {
       items.push(<Layout style={{width:'100%', flexDirection:'row', height:75, marginTop:'3%', backgroundColor:'#fff', borderBottomWidth: 1,
@@ -107,7 +107,7 @@ export default class ViewCart extends React.Component{
       >
         <Layout style={{width:'60%', marginRight: '10%'}}>
           <Text style={{fontWeight:'bold', fontSize:17, width:'60%',}}>{item.title}</Text>
-          <Text style={{fontSize:16, color:'#000', marginTop:'0.2%',}}>Rs {item.actualPrice}</Text>
+          <Text style={{fontSize:16, color:'#000', marginTop:'0.2%'}}>₹ {item.actualPrice}</Text>
           <Text style={{fontSize:16, color:'#757575', }}>{item.description}</Text>
         </Layout>
         {this.renderCartButton(key,item)}
@@ -163,8 +163,8 @@ export default class ViewCart extends React.Component{
       <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
                                 flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}>
             <Layout style={{width:'67%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
-              <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems} Items</Text>
-              <Text style={{color:'#fff'}}>Rs {this.state.totalPrice} + taxes</Text>
+              <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems?this.state.totalItems:'0'} Items</Text>
+              <Text style={{color:'#fff'}}>₹ {this.state.totalPrice?this.state.totalPrice:'0'}</Text>
             </Layout>
 
             <Layout style={{alignItems:'center', backgroundColor: 'transparent', alignItems:'center', flexDirection:"row"}}>
