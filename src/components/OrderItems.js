@@ -72,7 +72,7 @@ export default class Orderitems extends React.Component{
         actualPrice: 50,
         quantity:0
       },
-      
+
     },
 
     cart:{},
@@ -86,11 +86,11 @@ export default class Orderitems extends React.Component{
 
   renderCartButton(key,item)
   {
-    
+
     if(item.quantity == 0)
     {
       return <TouchableOpacity style={{borderRadius:4,paddingLeft:'5.2%',paddingRight:'5.2%',paddingTop:'1%', paddingBottom:'1%', backgroundColor:'#fff',
-      borderWidth:1, borderColor:'#bdbdbd'}} 
+      borderWidth:1, borderColor:'#bdbdbd'}}
       onPress={()=>{
         let items = this.state.items
         let cart = this.state.cart
@@ -103,7 +103,7 @@ export default class Orderitems extends React.Component{
         this.setState({cart:cart, items:items, totalPrice:totalPrice, totalItems:totalItems})}}>
         <Text style={{color:'#7cb342', fontWeight:'bold'}}>ADD +</Text>
         </TouchableOpacity>
-    } 
+    }
     //paddingLeft:'5.2%',paddingRight:'5.2%',paddingTop:'1%', paddingBottom:'1%',
     else
     {
@@ -130,7 +130,7 @@ export default class Orderitems extends React.Component{
         <Text style={{color:'red', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>-</Text>
         </TouchableOpacity>
         <Text style={{color:'#272727', fontWeight:'bold', paddingLeft:'2.8%', paddingRight:'2.8%',paddingTop:'1%', paddingBottom:'1%', backgroundColor:'#e8eaf6'}}>{item.quantity}</Text>
-        <TouchableOpacity style={{color:'#7cb342', fontWeight:'bold'}} 
+        <TouchableOpacity style={{color:'#7cb342', fontWeight:'bold'}}
         onPress={()=>{
           let items = this.state.items
           let cart = this.state.cart
@@ -144,7 +144,7 @@ export default class Orderitems extends React.Component{
         }}>
         <Text style={{color:'#7cb342', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>+</Text>
         </TouchableOpacity>
-      </Layout> 
+      </Layout>
     }
   }
 
@@ -153,7 +153,7 @@ export default class Orderitems extends React.Component{
 
     var items = []
     var stateItems = this.state.items
-    
+
     Object.entries(stateItems).forEach(([key,item]) => {
       items.push(<Layout style={{width:'100%', flexDirection:'row', height:100, marginTop:'3%', backgroundColor:'#FFFFFF'}} >
       <Image source={require('../resources/Images/food3.jpg')}  style={{width:'20%', height:'70%', marginLeft:'5%', borderRadius:10}} resizeMode="cover"/>
@@ -178,19 +178,22 @@ export default class Orderitems extends React.Component{
   {
     if(this.state.totalItems > 0)
     {
-      return <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#598BFF',
-                             borderTopLeftRadius:10, borderTopRightRadius:10, flexDirection:"row"}}
-                
-                onPress={()=>{this.props.navigation.navigate('ViewCart', {cart: this.state.cart, totalPrice: this.state.totalPrice, totalItems: this.state.totalItems, ordermode:this.props.navigation.getParam('ordermode')})}}>
-        <Layout style={{width:'70%', backgroundColor:'#598BFF', justifyContent:'center', paddingLeft:'2%'}}>
-          <Text style={{color:'#fff'}}>{this.state.totalItems} ITEMS</Text>
-          <Text style={{color:'#fff'}}>Rs {this.state.totalPrice} plus taxes</Text>
-        </Layout>
-        <Layout style={{backgroundColor:'#598BFF', alignItems:'center', justifyContent:'center', flexDirection:"row"}}>
-          <Text style={{color:'#fff', fontSize:19}}> View Cart</Text>
-          <Icon name='arrow-right' width={20} height={20} fill='#fff' />
-        </Layout>
-    </TouchableOpacity>
+      return (
+        <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
+                                  flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
+                          onPress={()=>{this.props.navigation.navigate('ViewCart', {cart: this.state.cart, totalPrice: this.state.totalPrice, totalItems: this.state.totalItems, ordermode:this.props.navigation.getParam('ordermode')})}}
+        >
+              <Layout style={{width:'63%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
+                <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems} Items</Text>
+                <Text style={{color:'#fff'}}>Rs {this.state.totalPrice} + taxes</Text>
+              </Layout>
+
+              <Layout style={{alignItems:'center', backgroundColor: 'transparent', alignItems:'center', flexDirection:"row"}}>
+                <Text style={{color:'#fff'}}>VIEW CART</Text>
+                <Icon name='arrow-right' width={20} height={20} fill='#fff' />
+              </Layout>
+          </TouchableOpacity>
+      );
     }
   }
 
@@ -206,7 +209,7 @@ export default class Orderitems extends React.Component{
     <Image source={require('../resources/Images/food1.jpeg')} style={{width:'100%', height: this.screenHeight*0.3, marginBottom:'3%'}} />
 
     <Layout style={{marginLeft:'3%'}}>
-      
+
       <Layout style={{width:'100%', flexDirection:'row', }}>
         <Text category="h4" style={{ fontWeight:'bold', width:'90%'}}>Domino's Pizza</Text>
           <Layout style={{borderRadius:3,padding:'1.2%', backgroundColor:'#7cb342'}}>
@@ -221,17 +224,17 @@ export default class Orderitems extends React.Component{
     <Layout>
 
       {this.renderItemList()}
-      
+
     </Layout>
-    
+
     <Layout style={{height:this.screenHeight*0.2}}>
       <Text></Text>
     </Layout>
-    
+
   </ScrollView>
   {this.renderCartTab()}
-  
-      
+
+
   </View>
   )
   }

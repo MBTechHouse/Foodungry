@@ -292,7 +292,7 @@ export default class Orders extends React.Component {
                   numberOfLines={1}
                   style={{
                     fontSize: 20,
-                    color: '#272727',
+                    color: '#fdfdfd',
                     fontWeight: 'bold',
                     marginRight: '2%',
                     marginLeft: '4%',
@@ -303,7 +303,7 @@ export default class Orders extends React.Component {
                   name="edit-outline"
                   width={this.w * 0.06}
                   height={this.w * 0.06}
-                  fill="#272727"
+                  fill="#fdfdfd"
                 />
               </TouchableOpacity>
             </Layout>
@@ -506,7 +506,7 @@ export default class Orders extends React.Component {
             numberOfLines={1}
             style={{
               fontSize: 20,
-              color: '#272727',
+              color: '#fdfdfd',
               fontWeight: 'bold',
               marginRight: '2%',
               marginLeft: '4%',
@@ -517,7 +517,7 @@ export default class Orders extends React.Component {
             name="edit-outline"
             width={this.w * 0.06}
             height={this.w * 0.06}
-            fill="#272727"
+            fill="#fdfdfd"
           />
         </TouchableOpacity>
         <ScrollView

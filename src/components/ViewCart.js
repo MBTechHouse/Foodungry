@@ -20,15 +20,16 @@ export default class ViewCart extends React.Component{
 
   componentDidMount()
   {
-      this.setState({cart: this.props.navigation.getParam('cart'), totalPrice: this.props.navigation.getParam('totalPrice'), totalItems: this.props.navigation.getParam('totalItems')})
+      this.setState({
+        cart: this.props.navigation.getParam('cart'),
+        totalPrice: this.props.navigation.getParam('totalPrice'),
+        totalItems: this.props.navigation.getParam('totalItems')
+      });
   }
-
 
   renderCartButton(key,item)
   {
-
-    if(item.quantity == 0)
-    {
+    if(item.quantity == 0) {
       return <TouchableOpacity style={{borderRadius:4,paddingLeft:'5.2%',paddingRight:'5.2%',paddingTop:'1%', paddingBottom:'1%', backgroundColor:'#fff',
       borderWidth:1, borderColor:'#bdbdbd', height:'40%'}}
       onPress={()=>{
@@ -98,17 +99,19 @@ export default class ViewCart extends React.Component{
     if(this.state.cart)
       stateItems = this.state.cart;
     else
-      return <Text style={{ fontSize: 18, alignItems: 'center', fontFamily: 'serif', marginTop: '10%' }}>No items in Cart</Text>
+      return <Text style={{ fontSize: 18, alignItems: 'center', fontFamily: 'serif', marginTop: '10%' }}>CART IS EMPTY</Text>
 
     Object.entries(stateItems).forEach(([key,item]) => {
-      items.push(<Layout style={{width:'100%', flexDirection:'row', height:100, marginTop:'3%', backgroundColor:'#FFFFFF'}} >
-        <Layout style={{width:'60%' }}>
+      items.push(<Layout style={{width:'100%', flexDirection:'row', height:75, marginTop:'3%', backgroundColor:'#fff', borderBottomWidth: 1,
+                    alignItems: 'center'}}
+      >
+        <Layout style={{width:'60%', marginRight: '10%'}}>
           <Text style={{fontWeight:'bold', fontSize:17, width:'60%',}}>{item.title}</Text>
           <Text style={{fontSize:16, color:'#000', marginTop:'0.2%',}}>Rs {item.actualPrice}</Text>
           <Text style={{fontSize:16, color:'#757575', }}>{item.description}</Text>
         </Layout>
         {this.renderCartButton(key,item)}
-  </Layout>)
+      </Layout>)
     })
     return items
   }
@@ -116,46 +119,61 @@ export default class ViewCart extends React.Component{
 
   render()
   {
-    console.log("Cart", this.props.navigation.getParam('cart'))
-  return(
-    <View style={styles.container}>
-      <Layout style={{width:'100%', height:'14%', backgroundColor:'#ef5350', paddingLeft:'3%'}}>
-        <Text style={{color:'#FFF', fontSize:16, marginTop:'1%'}}>{this.props.navigation.getParam('ordermode')} AT</Text>
-        <Layout style={{flexDirection:'row',backgroundColor:'#ef5350' , marginTop:'1%', justifyContent:'space-around'}}>
-          <Layout style={{flexDirection:'row', backgroundColor:'ef5350'}}>
-        <Icon name='checkmark-circle-2' width={25} height={25} fill='#FFF' />
-        <Text style={{color:'#FFF', fontSize:18}}> HOME(Golf course Road)</Text>
-          </Layout>
-        <Text style={{color:'#FFF', fontSize:18}}>CHANGE</Text>
+    return(
+      <View style={styles.container}>
+        <Layout style={{backgroundColor: '#55C2FF', borderLeftColor: '#A6E7F9', borderLeftWidth: 15, borderBottomColor: '#A6E7F9', borderBottomWidth: 7, borderBottomLeftRadius: 40, flexDirection:'row'}}>
+          <Text
+            numberOfLines={1}
+            style={{
+              fontSize: 19,
+              color: '#fdfdfd',
+              fontWeight: 'bold',
+              fontFamily: 'serif',
+              margin: '3%',
+              marginLeft: '5%'
+            }}>
+            CART
+          </Text>
+          <TouchableOpacity
+            style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '22%' }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                fontSize: 20,
+                color: '#fdfdfd',
+                fontWeight: 'bold',
+                marginRight: '2%',
+                marginLeft: '4%',
+              }}>
+              Home Location
+            </Text>
+            <Icon
+              name="edit-outline"
+              width={this.screenWidth * 0.06}
+              height={this.screenWidth * 0.06}
+              fill="#fdfdfd"
+            />
+          </TouchableOpacity>
         </Layout>
-        <Text style={{color:'#FFF', fontSize:16, paddingLeft:'14%'}}>{this.props.navigation.getParam('ordermode')} in 30 mins with LIVE TRACKING</Text>
-      </Layout>
-  <ScrollView style={styles.container}>
-    <Layout style={{marginLeft:'6%'}}>
-      {this.renderItemList()}
-    </Layout>
-
-    <Layout style={{height:this.screenHeight*0.1}}>
-      <Text></Text>
-    </Layout>
-
-
-  </ScrollView>
-  <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#598BFF',
-                             borderTopLeftRadius:10, borderTopRightRadius:10, flexDirection:"row"}}>
-        <Layout style={{width:'70%', backgroundColor:'#598BFF', justifyContent:'center', paddingLeft:'2%'}}>
-          <Text style={{color:'#fff'}}>{this.state.totalItems} ITEMS</Text>
-          <Text style={{color:'#fff'}}>Rs {this.state.totalPrice} plus taxes</Text>
+      <ScrollView style={styles.container}>
+        <Layout style={{marginLeft:'6%'}}>
+          {this.renderItemList()}
         </Layout>
-        <Layout style={{backgroundColor:'#598BFF', alignItems:'center', justifyContent:'center', flexDirection:"row"}}>
-          <Text style={{color:'#fff', fontSize:19}}>Place Order</Text>
-          <Icon name='arrow-right' width={20} height={20} fill='#fff' />
-        </Layout>
-    </TouchableOpacity>
+      </ScrollView>
+      <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
+                                flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}>
+            <Layout style={{width:'67%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
+              <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems} Items</Text>
+              <Text style={{color:'#fff'}}>Rs {this.state.totalPrice} + taxes</Text>
+            </Layout>
 
-
-  </View>
-  )
+            <Layout style={{alignItems:'center', backgroundColor: 'transparent', alignItems:'center', flexDirection:"row"}}>
+              <Text style={{color:'#fff'}}>Place Order</Text>
+              <Icon name='arrow-right' width={20} height={20} fill='#fff' />
+            </Layout>
+        </TouchableOpacity>
+      </View>
+    );
   }
 }
 
