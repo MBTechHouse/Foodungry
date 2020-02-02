@@ -544,6 +544,8 @@ export default class Orders extends React.Component {
           stickyHeaderHeight={this.h*0.2}
           renderForeground={() => this.getForeground()}
           renderStickyHeader={() => this.stickyHeader()}
+          fadeOutForeground={false}
+          fadeOutBackground={false}
         >
           <View style={{width: '100%', height: (this.state.preview)?this.h*(0.23):'0%'}}>
             <View style={{width: '100%', height: (this.state.preview)?'100%':'0%'}}>

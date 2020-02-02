@@ -91,16 +91,9 @@ export default class ViewCart extends React.Component{
     }
   }
 
-  renderItemList()
-  {
-
+  renderItemList() {
     var items = []
-    var stateItems = [];
-    if(this.state.cart)
-      stateItems = this.state.cart;
-    else
-      return <Text style={{ fontSize: 18, alignItems: 'center', color: '#aaa', fontFamily: 'serif', marginLeft: '28%', marginTop: '10%' }}>CART IS EMPTY</Text>
-
+    var stateItems = this.state.cart;
     Object.entries(stateItems).forEach(([key,item]) => {
       items.push(<Layout style={{width:'100%', flexDirection:'row', height:75, marginTop:'3%', backgroundColor:'#fff', borderBottomWidth: 1,
                     alignItems: 'center'}}
@@ -114,6 +107,25 @@ export default class ViewCart extends React.Component{
       </Layout>)
     })
     return items
+  }
+
+  getScrollView()
+  {
+    if(this.state.cart)
+      return (
+        <View>
+          <Layout style={{marginLeft:'6%'}}>
+            {this.renderItemList()}
+          </Layout>
+          <Layout style={{width: '100%', padding: '5%', backgroundColor: '#D2F3FC', marginTop: '3%' }}>
+            <Layout style={{alignItems:'center', backgroundColor: 'transparent', alignItems:'center', flexDirection:"row"}}>
+              <Text style={{}}>Item Total</Text>
+              <Text style={{position:'absolute', right: 10}}>₹ {this.state.totalPrice}</Text>
+            </Layout>
+          </Layout>
+        </View>
+      );
+    return <Text style={{ fontSize: 18, alignItems: 'center', color: '#aaa', fontFamily: 'serif', marginLeft: '28%', marginTop: '10%' }}>CART IS EMPTY</Text>
   }
 
 
@@ -156,9 +168,7 @@ export default class ViewCart extends React.Component{
           </TouchableOpacity>
         </Layout>
       <ScrollView style={styles.container}>
-        <Layout style={{marginLeft:'6%'}}>
-          {this.renderItemList()}
-        </Layout>
+        {this.getScrollView()}
       </ScrollView>
       <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
                                 flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}>
