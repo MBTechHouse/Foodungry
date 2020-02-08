@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet,Text, View, Image,TouchableOpacity, ScrollView, Linking } from 'react-native';
+import { StyleSheet,Text, View, Image,TouchableOpacity, ScrollView, Linking, PanResponder } from 'react-native';
 import {
   Button,
   Icon,
@@ -11,10 +11,31 @@ import {
 import firebase from 'firebase';
 
 export default class OrderList extends React.Component {
-
+  constructor() {
+    super();
+    //initialize state
+    this.panResponder;
+    //panResponder initialization
+    this.panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (event, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (event, gestureState) => true,
+      onMoveShouldSetPanResponder: (event, gestureState) => false,
+      onMoveShouldSetPanResponderCapture: (event, gestureState) => false,
+      onPanResponderGrant: (event, gestureState) => false,
+      onPanResponderMove: (event, gestureState) => false,
+      onPanResponderRelease: (event, gestureState) => {
+        console.log("Locs",event.nativeEvent.locationX.toFixed(2),"  ",event.nativeEvent.locationY.toFixed(2))
+        
+          this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode')})
+        
+      },
+    });
+  }
   state = {
     list: [],
-    listItems: {}
+    listItems: {},
+    locationX: 0,
+    locationY: 0,
   }
 
   static getDerivedStateFromProps(props,state) {
@@ -28,19 +49,27 @@ export default class OrderList extends React.Component {
     if(3.7 <= r && r < 4.2) return '#2ABE27'
     if(4.2 <= r && r <= 5.0) return '#076B05'
   }
+  onLayout(event){
+    console.log("Clciked",event.nativeEvent.layout)
+  }
+
+handlePress(evt){
+  console.log(`x coord = ${evt.nativeEvent.locationX.toFixed(2)} y coord = ${evt.nativeEvent.locationY.toFixed(2)}`);
+  this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode')})
+}
 
   restCard(rest) {
     return (
-      <Layout style={{ width:'100%', flexDirection:'row', height:100, backgroundColor:'#FFFFFF' }}>
+      <Layout style={{ width:'100%', flexDirection:'row', height:100, backgroundColor:'#FFFFFF' }} >
         <TouchableOpacity style={{width:'90%', flexDirection:'row', height:'100%', justifyContent: 'center', alignItems: 'center' }}
-          onPress={() => {this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode')})}}
+          onPress={(evt) => this.handlePress(evt)}
         >
 
-            <Layout style={{ position:'absolute', elevation:6, left:7, height:70, width: 85, borderRadius:20 }}>
+            <View  style={{ position:'absolute', elevation:6, left:7, height:70, width: 85, borderRadius:20 }} >
               <Image source={{uri: rest.image}} style={{ resizeMode:"stretch", height: '100%', width: '100%', borderRadius: 20 }} />
-            </Layout>
+            </View>
 
-            <Layout style={{width:'85%', height:90, borderRadius:20, elevation: 5, padding: 5, marginLeft: '15%' }}>
+            <Layout style={{width:'85%', height:90, borderRadius:20, elevation: 5, padding: 5, marginLeft: '15%' }} >
               <Layout style={{ marginLeft: '17%' }}>
                 <Text style={{fontWeight:'bold', fontSize:15, width:'100%', fontFamily: 'serif' }}>{rest.name}</Text>
                 <Text style={{fontSize:10, color:'#757575', width:'100%', marginTop: '3%'}}>{rest.type}</Text>
@@ -88,6 +117,9 @@ export default class OrderList extends React.Component {
 
   render()
   {
+    console.log(this.panResponder.panHandlers)
+    console.log("LocX",this.state.locationX)
+    console.log("LocY",this.state.locationY)
   return (
     <View style={{width:'100%', height:'100%'}}>
       {this.renderItems()}
