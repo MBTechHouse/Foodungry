@@ -41,7 +41,7 @@ export default class Orderitems extends React.Component{
         quantity:0,
         type:1
       },
-      
+
     },
 
     cart:{},
@@ -67,7 +67,7 @@ export default class Orderitems extends React.Component{
   
   renderCartButton(key,item)
   {
-    
+
     if(item.quantity == 0)
     {
       return <TouchableOpacity style={{backgroundColor:'#fff'}} 
@@ -83,7 +83,7 @@ export default class Orderitems extends React.Component{
         this.setState({cart:cart, items:items, totalPrice:totalPrice, totalItems:totalItems})}}>
         <Image source={require('../resources/icons/plus.png')} style={{width:40, height:40}} />
         </TouchableOpacity>
-    } 
+    }
     //paddingLeft:'5.2%',paddingRight:'5.2%',paddingTop:'1%', paddingBottom:'1%',
     else
     {
@@ -125,7 +125,7 @@ export default class Orderitems extends React.Component{
         }}>
         <Image source={require('../resources/icons/minus-nobg.png')} style={{width:28, height:28, tintColor:'#fff'}}/>
         </TouchableOpacity>
-      </Layout> 
+      </Layout>
     }
   }
 
@@ -134,7 +134,7 @@ export default class Orderitems extends React.Component{
 
     var items = []
     var stateItems = this.state.items
-    
+
     Object.entries(stateItems).forEach(([key,item]) => {
       items.push(<BoxShadow setting={{
         width: this.screenWidth *0.95,
@@ -177,19 +177,22 @@ export default class Orderitems extends React.Component{
   {
     if(this.state.totalItems > 0)
     {
-      return <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#598BFF',
-                             borderTopLeftRadius:10, borderTopRightRadius:10, flexDirection:"row"}}
-                
-                onPress={()=>{this.props.navigation.navigate('ViewCart', {cart: this.state.cart, totalPrice: this.state.totalPrice, totalItems: this.state.totalItems, ordermode:this.props.navigation.getParam('ordermode')})}}>
-        <Layout style={{width:'70%', backgroundColor:'#598BFF', justifyContent:'center', paddingLeft:'2%'}}>
-          <Text style={{color:'#fff'}}>{this.state.totalItems} ITEMS</Text>
-          <Text style={{color:'#fff'}}>Rs {this.state.totalPrice} plus taxes</Text>
-        </Layout>
-        <Layout style={{backgroundColor:'#598BFF', alignItems:'center', justifyContent:'center', flexDirection:"row"}}>
-          <Text style={{color:'#fff', fontSize:19}}> View Cart</Text>
-          <Icon name='arrow-right' width={20} height={20} fill='#fff' />
-        </Layout>
-    </TouchableOpacity>
+      return (
+        <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
+                                  flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
+                          onPress={()=>{this.props.navigation.navigate('ViewCart', {cart: this.state.cart, totalPrice: this.state.totalPrice, totalItems: this.state.totalItems, ordermode:this.props.navigation.getParam('ordermode')})}}
+        >
+              <Layout style={{width:'63%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
+                <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems} Items</Text>
+                <Text style={{color:'#fff'}}>Rs {this.state.totalPrice} + taxes</Text>
+              </Layout>
+
+              <Layout style={{alignItems:'center', backgroundColor: 'transparent', alignItems:'center', flexDirection:"row"}}>
+                <Text style={{color:'#fff'}}>VIEW CART</Text>
+                <Icon name='arrow-right' width={20} height={20} fill='#fff' />
+              </Layout>
+          </TouchableOpacity>
+      );
     }
   }
 
@@ -298,18 +301,18 @@ export default class Orderitems extends React.Component{
     <Layout style={{paddingLeft:'2%'}}>
 
       {this.renderItemList()}
-      
+
     </Layout>
-    
+
     <Layout style={{height:this.screenHeight*0.2}}>
       <Text></Text>
     </Layout>
-    
+
   </ScrollView>
   </Viewport.Tracker>
   {this.renderCartTab()}
-  
-      
+
+
   </View>
   )
   }
