@@ -28,6 +28,7 @@ const OrderNavigator = createStackNavigator(
   },
   {
     initialRouteName: 'Orders',
+  headerMode: 'none'
   }
 );
 

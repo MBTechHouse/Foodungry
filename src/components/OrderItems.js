@@ -1,96 +1,76 @@
 import React from 'react';
-import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View, TouchableHighlight } from 'react-native';
 import { Button, Layout, Text, Icon } from 'react-native-ui-kitten';
+import {BoxShadow} from 'react-native-shadow';
+import { TouchableNativeFeedback } from 'react-native-gesture-handler';
+import { Viewport } from '@skele/components'
+
+const ViewportAwareView = Viewport.Aware(View)
+
 export default class Orderitems extends React.Component{
 
 
-  static navigationOptions = {
-      title: "Domino's Pizza",
-          headerStyle: {
-            backgroundColor: '#fff',
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-          },
-  };
 
   state = {
     items: {
       0: {
         title:'Cafe Frappe',
         description: 'Coffee',
-        strikePrice: 120,
         actualPrice: 90,
-        quantity:0
+        quantity:0,
+        type:0
       },
       1: {
         title:'Macroni',
         description: 'Noodles',
-        strikePrice: 200,
         actualPrice: 110,
-        quantity:0
+        quantity:0,
+        type:1
       },
       2: {
         title:'Margherita',
         description: 'Pizza',
-        strikePrice: 375,
         actualPrice: 210,
-        quantity:0
+        quantity:0,
+        type:2
       },
       3: {
         title:'Softy',
         description: 'Ice Cream',
-        strikePrice: 75,
         actualPrice: 50,
-        quantity:0
-      },
-      4: {
-        title:'Cafe Frappe',
-        description: 'Coffee',
-        strikePrice: 120,
-        actualPrice: 90,
-        quantity:0
-      },
-      5: {
-        title:'Macroni',
-        description: 'Noodles',
-        strikePrice: 200,
-        actualPrice: 110,
-        quantity:0
-      },
-      6: {
-        title:'Margherita',
-        description: 'Pizza',
-        strikePrice: 375,
-        actualPrice: 210,
-        quantity:0
-      },
-      7: {
-        title:'Softy',
-        description: 'Ice Cream',
-        strikePrice: 75,
-        actualPrice: 50,
-        quantity:0
+        quantity:0,
+        type:1
       },
 
     },
 
     cart:{},
     totalPrice: 0,
-    totalItems: 0
-  }
+    totalItems: 0,
+    categoryList:{
+      cat0:{id:0,name:'Starters'},
+      cat1:{id:1,name:'Breads'},
+      cat2:{id:2,name:'Salads'},
+      cat3:{id:3,name:'Main Course'},
+      cat4:{id:4,name:'Deserts'},
+      cat5:{id:5,name:'Chinese'},
+      cat6:{id:6,name:'Continental'},
+      cat7:{id:7,name:'Burgers'},
+      cat8:{id:8,name:'Rice'},
 
+  },
+  currentCategorySelected:0
+  }
   screenWidth = Dimensions.get('screen').width
   screenHeight = Dimensions.get('screen').height
 
-
+  
   renderCartButton(key,item)
   {
 
     if(item.quantity == 0)
     {
-      return <TouchableOpacity style={{borderRadius:4,paddingLeft:'5.2%',paddingRight:'5.2%',paddingTop:'1%', paddingBottom:'1%', backgroundColor:'#fff',
-      borderWidth:1, borderColor:'#bdbdbd'}}
+      return <TouchableOpacity style={{backgroundColor:'#fff'}} 
       onPress={()=>{
         let items = this.state.items
         let cart = this.state.cart
@@ -101,16 +81,31 @@ export default class Orderitems extends React.Component{
         totalPrice = totalPrice + item.actualPrice
         cart[key] = item
         this.setState({cart:cart, items:items, totalPrice:totalPrice, totalItems:totalItems})}}>
-        <Text style={{color:'#7cb342', fontWeight:'bold'}}>ADD +</Text>
+        <Image source={require('../resources/icons/plus.png')} style={{width:40, height:40}} />
         </TouchableOpacity>
     }
     //paddingLeft:'5.2%',paddingRight:'5.2%',paddingTop:'1%', paddingBottom:'1%',
     else
     {
-      return <Layout style={{flexDirection:'row',borderRadius:4, backgroundColor:'#fff',
-      borderWidth:1, borderColor:'#bdbdbd'}}>
-        <TouchableOpacity style={{color:'#7cb342', fontWeight:'bold'}}
+      return <Layout style={{backgroundColor:'#fff',
+      borderColor:'#bdbdbd',paddingLeft:5.5}}>
+        <TouchableOpacity style={{backgroundColor:'#6ed6ff', borderTopLeftRadius:15, borderTopRightRadius:15,alignItems:'center', justifyContent:'center'}}
          onPress={()=>{
+          let items = this.state.items
+          let cart = this.state.cart
+          let totalItems = this.state.totalItems
+          let totalPrice = this.state.totalPrice
+          totalItems = totalItems + 1
+          totalPrice = totalPrice + item.actualPrice
+        items[key].quantity = items[key].quantity + 1
+        cart[key] = items[key]
+        this.setState({items:items, cart:cart,totalPrice:totalPrice, totalItems:totalItems})
+         }}>
+        <Image source={require('../resources/icons/plus-nobg.png')} style={{width:30, height:30, tintColor:'#fff'}}/>
+        </TouchableOpacity>
+        <Text style={{backgroundColor:'#fff',color:'#272727', fontWeight:'bold', paddingLeft:'2.8%', paddingRight:'2.8%',paddingTop:'1%', paddingBottom:'1%', }}>{item.quantity}</Text>
+        <TouchableOpacity style={{backgroundColor:'#6ed6ff', borderBottomLeftRadius:15, borderBottomRightRadius:15,alignItems:'center', justifyContent:'center'}} 
+        onPress={()=>{
           let items = this.state.items
           let cart = this.state.cart
           let totalItems = this.state.totalItems
@@ -126,23 +121,9 @@ export default class Orderitems extends React.Component{
           }
           else
             this.setState({cart:cart, items:items, totalPrice:totalPrice, totalItems:totalItems})
-         }}>
-        <Text style={{color:'red', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>-</Text>
-        </TouchableOpacity>
-        <Text style={{color:'#272727', fontWeight:'bold', paddingLeft:'2.8%', paddingRight:'2.8%',paddingTop:'1%', paddingBottom:'1%', backgroundColor:'#e8eaf6'}}>{item.quantity}</Text>
-        <TouchableOpacity style={{color:'#7cb342', fontWeight:'bold'}}
-        onPress={()=>{
-          let items = this.state.items
-          let cart = this.state.cart
-          let totalItems = this.state.totalItems
-          let totalPrice = this.state.totalPrice
-          totalItems = totalItems + 1
-          totalPrice = totalPrice + item.actualPrice
-        items[key].quantity = items[key].quantity + 1
-        cart[key] = items[key]
-        this.setState({items:items, cart:cart,totalPrice:totalPrice, totalItems:totalItems})
+          
         }}>
-        <Text style={{color:'#7cb342', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>+</Text>
+        <Image source={require('../resources/icons/minus-nobg.png')} style={{width:28, height:28, tintColor:'#fff'}}/>
         </TouchableOpacity>
       </Layout>
     }
@@ -155,21 +136,39 @@ export default class Orderitems extends React.Component{
     var stateItems = this.state.items
 
     Object.entries(stateItems).forEach(([key,item]) => {
-      items.push(<Layout style={{width:'100%', flexDirection:'row', height:100, marginTop:'3%', backgroundColor:'#FFFFFF'}} >
-      <Image source={require('../resources/Images/food3.jpg')}  style={{width:'20%', height:'70%', marginLeft:'5%', borderRadius:10}} resizeMode="cover"/>
-      <Layout style={{width:'80%', marginLeft:'4%'}}>
-        <Layout style={{width:'100%', flexDirection:'row', }}>
-          <Text style={{fontWeight:'bold', fontSize:17, width:'60%',}}>{item.title}</Text>
-            {this.renderCartButton(key,item)}
-        </Layout>
-        <Text style={{fontSize:16, color:'#757575', }}>{item.description}</Text>
-        <Layout style={{flexDirection:'row'}}>
-          <Text style={{fontSize:16, color:'#757575', marginTop:'0.2%', textDecorationLine: 'line-through', textDecorationStyle: 'solid'}}>Rs {item.strikePrice}</Text>
-          <Text style={{fontSize:16, color:'#000', marginTop:'0.2%', marginLeft:'3%', }}>Rs {item.actualPrice}</Text>
-        </Layout>
-        <Text style={{fontSize:16, color:'red', marginTop:'1%' }}>Save {item.strikePrice - item.actualPrice}</Text>
-      </Layout>
-  </Layout>)
+      items.push(<BoxShadow setting={{
+        width: this.screenWidth *0.95,
+        height: this.screenHeight * 0.15,
+        color: '#000',
+        border: 5,
+        opacity: 0.2,
+        x: 0,
+        y: 4,
+        radius:this.screenHeight*0.02,
+        style:{
+          marginTop:this.screenHeight*0.01,
+          marginBottom: this.screenHeight*0.015
+        }
+      }}>
+      <View style={{width:this.screenWidth *0.95, flexDirection:'row', height:this.screenHeight*0.15, backgroundColor:'#fff', borderRadius:this.screenHeight*0.02,}} >
+        <View style={{height:'100%', width:'3%', backgroundColor:(item.type == 0)?'green':(item.type == 1)?'#795548':'#d32f2f', borderTopLeftRadius:this.screenHeight*0.02, borderBottomLeftRadius:this.screenHeight*0.02}}>
+          <Text></Text>
+        </View>
+      <View style={{width:'80%', marginLeft:'4%', justifyContent:'space-around'}}>
+        <View>
+          <Text style={{fontWeight:'bold', fontSize:19, width:'60%'}}>{item.title}</Text>
+        <Text style={{fontSize:16, color:'#757575', marginTop:'1%'}}>{item.description}</Text>
+        </View>
+        <View style={{flexDirection:'row',  marginBottom:'2%',height:'20%', alignItems:'center'}}>
+          <Image source={require('../resources/icons/rupee.png')} style={{width:15, height:15}} resizeMode="contain" />
+          <Text style={{fontSize:18, color:'#0092cc',marginLeft:'1%',}}>{item.actualPrice}</Text>
+          </View>
+      </View>
+      <View style={{height:'100%', justifyContent:'center', alignItems:'center'}}>
+      {this.renderCartButton(key,item)}
+      </View>
+  </View>
+  </BoxShadow>)
     })
     return items
   }
@@ -197,6 +196,26 @@ export default class Orderitems extends React.Component{
     }
   }
 
+  handlePills(text)
+  {
+    let pillsarr = text.split(',')
+    let pillsView = []
+    pillsarr.forEach(pills=>{
+      pillsView.push(<View style={{padding:5, borderRadius:9, backgroundColor:'#fff',marginLeft:5, marginRight:10 }}>
+        <Text>{pills}</Text>
+      </View>)
+    })
+    return pillsView
+  }
+
+  
+  _handleViewportEnter = ()=>{
+    console.log("Yeneter")
+  }
+
+  _handleViewportLeave = ()=>{
+    console.log("Yexit")
+  }
   render()
   {
     console.log("Total Price",this.state.totalPrice)
@@ -205,23 +224,81 @@ export default class Orderitems extends React.Component{
     console.log("nav", this.props.navigation.getParam('ordermode'))
   return(
     <View>
-  <ScrollView style={styles.container}>
-    <Image source={require('../resources/Images/food1.jpeg')} style={{width:'100%', height: this.screenHeight*0.3, marginBottom:'3%'}} />
+      <Viewport.Tracker>
+  <ScrollView style={styles.container} >
+    
+    <ViewportAwareView 
+        onViewportEnter={this._handleViewportEnter}
+        onViewportLeave={this._handleViewportLeave}>
+    <View style={{flex:1, alignItems:'center', height:this.screenHeight*0.58,}}>
+      <Image source={require('../resources/Images/food1.jpeg')} style={{width:'100%', height: this.screenHeight*0.45, marginBottom:'3%'}} />
+      
+      <BoxShadow
+          setting={{
+            width: this.screenWidth * 0.9,
+            height: this.screenHeight * 0.25,
+            color: '#000',
+            border: 5,
+            opacity: 0.2,
+            x: 0,
+            y: 4,
+            radius:10,
+            style: {
+              marginVertical: 5,
+              marginLeft: this.screenWidth * 0.04,
+              marginRight: this.screenWidth * 0.04,
+              position:'absolute', top:this.screenHeight*0.30,
+            },
+          }}>
+      <View style={{height: this.screenHeight*0.25,borderRadius:10,  backgroundColor:'#55c2ff'}}>
+        <View style={{width:'90%', flexDirection:'row',  justifyContent:'center',}}>
+          <Text category="h4" style={{ fontWeight:'bold', width:'90%', color:'#fff', top:this.screenHeight*0.03, left:this.screenWidth*0.06}}>Domino's Pizza</Text>
+            <View style={{borderRadius:3,padding:'1.2%', backgroundColor:'#7cb342'}}>
+              <Text style={{color:'#fff'}}>4.5</Text>
+            </View>
+          </View>
+          <View style={{flexDirection:'row', top:this.screenHeight*0.04, left:this.screenWidth*0.08}}>{this.handlePills("Fast Food, Pizza")}</View>
+          <Text style={{color:'#272727',top:this.screenHeight*0.07, left:this.screenWidth*0.08, fontWeight:'bold'}}>Banashankari 3rd Stage</Text>
+          <Text style={{color:'#272727',top:this.screenHeight*0.08, left:this.screenWidth*0.08, fontWeight:'bold'}}>Cost for one:- $200</Text>
+        </View>
+        </BoxShadow>
+    </View>
+    </ViewportAwareView>
+    <View style={{width:'100%',height:this.screenHeight*0.1,top:this.screenHeight*0.035}}>
+    <ScrollView style={{flex:1, }} horizontal={true} showsHorizontalScrollIndicator={false}>
+    {
+      Object.values(this.state.categoryList).map(category=>{
+        if(this.state.currentCategorySelected==category.id)
+        {
+          return <TouchableOpacity 
+        style={{ height:'100%',
+        marginLeft:this.screenWidth*0.03,
+        marginRight:this.screenWidth*0.03,
+        alignItems:'center',
+        }}>
+            <Text style={{fontSize:16,marginBottom:this.screenHeight*0.01,color:'#0092cc', fontWeight:'bold'}}>{category.name}</Text>
+            <View style={{borderRadius:this.screenWidth*0.01/2,width:this.screenWidth*0.1, height:this.screenHeight*0.007, backgroundColor:'#55c2ff'}}>
+              <Text></Text>
+            </View>
+          </TouchableOpacity>
+        }
+        return <TouchableOpacity 
+        style={{ height:'100%',
+        marginLeft:this.screenWidth*0.03,
+        marginRight:this.screenWidth*0.03,
+        alignItems:'center'}}
+        onPress={()=>{this.setState({currentCategorySelected:category.id})}}
+        >
+            <Text style={{fontSize:16}}>{category.name}</Text>
+          </TouchableOpacity>
+        
+      })
+    
+    }
+    </ScrollView>
+    </View>
 
-    <Layout style={{marginLeft:'3%'}}>
-
-      <Layout style={{width:'100%', flexDirection:'row', }}>
-        <Text category="h4" style={{ fontWeight:'bold', width:'90%'}}>Domino's Pizza</Text>
-          <Layout style={{borderRadius:3,padding:'1.2%', backgroundColor:'#7cb342'}}>
-            <Text style={{color:'#fff'}}>4.5</Text>
-          </Layout>
-        </Layout>
-        <Text style={{color:'#272727', marginTop:'0.6%'}}>Fast Food, Pizza</Text>
-        <Text style={{color:'#757575', marginTop:'0.6%'}}>Banashankari 3rd Stage</Text>
-        <Text style={{color:'#757575', marginTop:'0.6%'}}>Cost for one:- $200</Text>
-      </Layout>
-
-    <Layout>
+    <Layout style={{paddingLeft:'2%'}}>
 
       {this.renderItemList()}
 
@@ -232,6 +309,7 @@ export default class Orderitems extends React.Component{
     </Layout>
 
   </ScrollView>
+  </Viewport.Tracker>
   {this.renderCartTab()}
 
 
