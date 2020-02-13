@@ -499,9 +499,9 @@ export default class Orders extends React.Component {
 
   stickyHeader() {
     return (
-      <View style={{ backgroundColor: '#55C2FF', borderBottomLeftRadius: 30 }}>
+      <View style={{ borderBottomLeftRadius: 30 }}>
         <TouchableOpacity
-          style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}>
+          style={{ flexDirection: 'row', alignItems: 'center', padding: 2, backgroundColor: '#55C2FF' }}>
           <Text
             numberOfLines={1}
             style={{
