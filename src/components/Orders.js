@@ -9,7 +9,7 @@ import {
   Dimensions,
   ScrollView,
   Animated,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import {Button, Layout, Icon} from 'react-native-ui-kitten';
 import OrderCard from '../HelperComponents/OrderCard';
@@ -31,8 +31,8 @@ export default class Orders extends React.Component {
     list: [],
     listName: 'restaurants',
     swipe: false,
-    preview:false,
-    cuurentCategoryId: null
+    preview: false,
+    cuurentCategoryId: null,
   };
 
   componentWillMount() {
@@ -110,31 +110,28 @@ export default class Orders extends React.Component {
               justifyContent: 'space-around',
               paddingBottom: '13%',
             }}
-            onPress={() =>{
-
-              if(cat.fromNode === "collections")
-              {
-                if(this.state.cuurentCategoryId !== cat.categoryId )
-              this.setState({
-                preview:true,
-                cuurentCategoryId: cat.categoryId
-              })
-              else
-              {
+            onPress={() => {
+              if (cat.fromNode === 'collections') {
+                if (this.state.cuurentCategoryId !== cat.categoryId)
+                  this.setState({
+                    preview: true,
+                    cuurentCategoryId: cat.categoryId,
+                  });
+                else {
+                  this.setState({
+                    preview: false,
+                    cuurentCategoryId: null,
+                  });
+                }
+              } else {
                 this.setState({
-                  preview:false,
-                  cuurentCategoryId: null
-                })
+                  list: cat.itemIds.split(','),
+                  listName: cat.fromNode,
+                  preview: false,
+                  cuurentCategoryId: null,
+                });
               }
-              }
-              else
-              {
-                this.setState({ list: cat.itemIds.split(','), listName: cat.fromNode, preview:false, cuurentCategoryId: null })
-              }
-
-              
-            }
-            }>
+            }}>
             <Image
               source={{uri: cat.icon}}
               style={{
@@ -161,346 +158,371 @@ export default class Orders extends React.Component {
     return items;
   }
 
-  getSecondFunc(temp_second)
-  {
-    if(temp_second!==undefined)
-          {
-            return <TouchableOpacity
-              style={{
-                borderRadius: this.w * 0.01,
-                width: this.w * 0.35,
-                height: this.h * 0.08,
-                backgroundColor: '#272727',
-                marginLeft:this.w*(0.08),
-                marginRight:this.w*(0.08)
-              }}
-              onPress={()=>{
-                this.setState({list: temp_second['restIds'].split(','), listName: 'restaurants' })
-              }}
-              >
-              <Image
-                source={{uri: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80'}}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius:  this.w * 0.01,
-                  opacity:0.5
-                }}
-                resizeMode="cover"
-              />
-              <View style={{position:'absolute',  width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>
-              <Text style={{fontWeight:'bold', fontSize:18, color:'#fff'}}>
-                {temp_second['name']}
-              </Text>
-            </View>
-            </TouchableOpacity>
-
-
-          }
-          else
-          {
-            return <TouchableOpacity
-            style={{
-              borderRadius: this.w * 0.01,
-              width: this.w * 0.35,
-              height: this.h * 0.08,
-              backgroundColor: '#fff',
-              marginLeft:this.w*(0.08),
-              marginRight:this.w*(0.08)
+  getSecondFunc(temp_second) {
+    if (temp_second !== undefined) {
+      return (
+        <TouchableOpacity
+          style={{
+            borderRadius: this.w * 0.01,
+            width: this.w * 0.35,
+            height: this.h * 0.08,
+            backgroundColor: '#272727',
+            marginLeft: this.w * 0.08,
+            marginRight: this.w * 0.08,
+          }}
+          onPress={() => {
+            this.setState({
+              list: temp_second['restIds'].split(','),
+              listName: 'restaurants',
+            });
+          }}>
+          <Image
+            source={{
+              uri:
+                'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80',
             }}
-            >
-            <Text></Text>
-          </TouchableOpacity>
-          }
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: this.w * 0.01,
+              opacity: 0.5,
+            }}
+            resizeMode="cover"
+          />
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#fff'}}>
+              {temp_second['name']}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity
+          style={{
+            borderRadius: this.w * 0.01,
+            width: this.w * 0.35,
+            height: this.h * 0.08,
+            backgroundColor: '#fff',
+            marginLeft: this.w * 0.08,
+            marginRight: this.w * 0.08,
+          }}>
+          <Text></Text>
+        </TouchableOpacity>
+      );
+    }
   }
 
   getPreview() {
     let items = [];
     let cats = [];
-    if (this.state.appData.categories) 
-    {
-      if(this.state.cuurentCategoryId)
-      {let itemKeys = this.state.appData.categories[this.state.cuurentCategoryId]['itemIds'].split(',')
-      console.log("itemKeys",itemKeys)
+    if (this.state.appData.categories) {
+      if (this.state.cuurentCategoryId) {
+        let itemKeys = this.state.appData.categories[
+          this.state.cuurentCategoryId
+        ]['itemIds'].split(',');
+        console.log('itemKeys', itemKeys);
         itemKeys.forEach(element => {
-          cats.push(this.state.appData.collections[element])
+          cats.push(this.state.appData.collections[element]);
         });
       }
-    for(let i=0; i<cats.length;i=i+2)
-    {
-      let temp_first = cats[i]
-      let temp_second = cats[i+1]
-      items.push(
-        <View style={{width:this.w * 0.38, height:this.h * 0.19, justifyContent:'space-between' }}>
-          <TouchableOpacity
+      for (let i = 0; i < cats.length; i = i + 2) {
+        let temp_first = cats[i];
+        let temp_second = cats[i + 1];
+        items.push(
+          <View
             style={{
-              borderRadius: this.w * 0.01,
-              width: this.w * 0.35,
-              height: this.h * 0.08,
-              backgroundColor: '#272727',
-              marginLeft:this.w*(0.08),
-              marginRight:this.w*(0.08)
-            }}
-
-            onPress={()=>{
-              this.setState({list: temp_first['restIds'].split(','), listName: 'restaurants' })
-            }}
-            >
-            <Image
-              source={{uri: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80'}}
+              width: this.w * 0.38,
+              height: this.h * 0.19,
+              justifyContent: 'space-between',
+            }}>
+            <TouchableOpacity
               style={{
-                width: '100%',
-                height: '100%',
-                borderRadius:  this.w * 0.01,
-                opacity:0.5
+                borderRadius: this.w * 0.01,
+                width: this.w * 0.35,
+                height: this.h * 0.08,
+                backgroundColor: '#272727',
+                marginLeft: this.w * 0.08,
+                marginRight: this.w * 0.08,
               }}
-              resizeMode="cover"
-            />
-            <View style={{position:'absolute',  width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>
-              <Text style={{fontWeight:'bold', fontSize:18, color:'#fff'}}>
-                {temp_first['name']}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        {this.getSecondFunc(temp_second)}
-
-        </View>
-      );
+              onPress={() => {
+                this.setState({
+                  list: temp_first['restIds'].split(','),
+                  listName: 'restaurants',
+                });
+              }}>
+              <Image
+                source={{
+                  uri:
+                    'https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80',
+                }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: this.w * 0.01,
+                  opacity: 0.5,
+                }}
+                resizeMode="cover"
+              />
+              <View
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{fontWeight: 'bold', fontSize: 18, color: '#fff'}}>
+                  {temp_first['name']}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            {this.getSecondFunc(temp_second)}
+          </View>,
+        );
+      }
     }
-  }
     return items;
   }
 
   getForeground() {
     return (
       <View>
-      <View style={{width: '100%', height: this.h*(0.42)}}>
-        <Layout style={styles1.locationHeader}>
-          <Layout
-            style={{
-              width: '78%',
-              backgroundColor: 'transparent',
-              justifyContent: 'space-around',
-              height: this.h*(0.11),
-            }}>
-            <Layout
-              style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
-              <TouchableOpacity
-                style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text
-                  numberOfLines={1}
-                  style={{
-                    fontSize: 20,
-                    color: '#fdfdfd',
-                    fontWeight: 'bold',
-                    marginRight: '2%',
-                    marginLeft: '4%',
-                  }}>
-                  Home Location
-                </Text>
-                <Icon
-                  name="edit-outline"
-                  width={this.w * 0.06}
-                  height={this.w * 0.06}
-                  fill="#fdfdfd"
-                />
-              </TouchableOpacity>
-            </Layout>
+        <View style={{width: '100%', height: this.h * 0.42}}>
+          <Layout style={styles1.locationHeader}>
             <Layout
               style={{
-                flexDirection: 'row',
-                width: '95%',
-                height: this.h * 0.06,
+                width: '78%',
                 backgroundColor: 'transparent',
+                justifyContent: 'space-around',
+                height: this.h * 0.11,
               }}>
               <Layout
-                style={{
-                  width: '15%',
-                  height: '100%',
-                  borderTopLeftRadius: 20,
-                  borderBottomLeftRadius: 20,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Icon
-                  name="search-outline"
-                  width={25}
-                  height={25}
-                  fill="#797d7f"
-                />
+                style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
+                <TouchableOpacity
+                  style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontSize: 20,
+                      color: '#fdfdfd',
+                      fontWeight: 'bold',
+                      marginRight: '2%',
+                      marginLeft: '4%',
+                    }}>
+                    Home Location
+                  </Text>
+                  <Icon
+                    name="edit-outline"
+                    width={this.w * 0.06}
+                    height={this.w * 0.06}
+                    fill="#fdfdfd"
+                  />
+                </TouchableOpacity>
               </Layout>
               <Layout
                 style={{
-                  width: '85%',
-                  height: '100%',
-                  borderTopRightRadius: 20,
-                  borderBottomRightRadius: 20,
-                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  width: '95%',
+                  height: this.h * 0.06,
+                  backgroundColor: 'transparent',
                 }}>
-                <TextInput
+                <Layout
                   style={{
-                    fontSize: 18,
-                    color: '#797d7f',
-                    width: '100%',
-                    height: '150%',
-                  }}
-                  placeholder="Search restaurants"
-                  placeholderTextColor={'#797d7f'}
-                />
+                    width: '15%',
+                    height: '100%',
+                    borderTopLeftRadius: 20,
+                    borderBottomLeftRadius: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Icon
+                    name="search-outline"
+                    width={25}
+                    height={25}
+                    fill="#797d7f"
+                  />
+                </Layout>
+                <Layout
+                  style={{
+                    width: '85%',
+                    height: '100%',
+                    borderTopRightRadius: 20,
+                    borderBottomRightRadius: 20,
+                    justifyContent: 'center',
+                  }}>
+                  <TextInput
+                    style={{
+                      fontSize: 18,
+                      color: '#797d7f',
+                      width: '100%',
+                      height: '150%',
+                    }}
+                    placeholder="Search restaurants"
+                    placeholderTextColor={'#797d7f'}
+                  />
+                </Layout>
               </Layout>
+            </Layout>
+
+            <Layout
+              style={{
+                width: '20%',
+                height: this.h * 0.11,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'transparent',
+              }}>
+              <BoxShadow
+                setting={{
+                  width: this.w * 0.18,
+                  height: this.w * 0.18,
+                  color: '#000',
+                  border: 4,
+                  radius: (this.w * 0.18) / 2,
+                  opacity: 0.18,
+                  x: 0,
+                  y: 2,
+                  style: {marginVertical: 5},
+                }}>
+                <Image
+                  source={require('../resources/Images/Bhargav1.jpg')}
+                  style={{
+                    width: this.w * 0.18,
+                    height: this.w * 0.18,
+                    borderRadius: (this.w * 0.18) / 2,
+                  }}
+                />
+              </BoxShadow>
             </Layout>
           </Layout>
 
-          <Layout
+          <View
             style={{
-              width: '20%',
-              height: this.h*(0.11),
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'transparent',
+              position: 'absolute',
+              top: this.h * 0.095,
+              elevation: 20,
+              paddingLeft: '10%',
             }}>
-            <BoxShadow
-              setting={{
-                width: this.w * 0.18,
-                height: this.w * 0.18,
-                color: '#000',
-                border: 4,
-                radius: (this.w * 0.18) / 2,
-                opacity: 0.18,
-                x: 0,
-                y: 2,
-                style: {marginVertical: 5},
-              }}>
-              <Image
-                source={require('../resources/Images/Bhargav1.jpg')}
-                style={{
-                  width: this.w * 0.18,
-                  height: this.w * 0.18,
-                  borderRadius: (this.w * 0.18) / 2,
-                }}
-              />
-            </BoxShadow>
-          </Layout>
-        </Layout>
+            <Carousel
+              data={this.state.appData.banners}
+              renderItem={this._renderItem}
+              sliderWidth={sliderWidth}
+              itemWidth={itemWidth}
+              inactiveSlideScale={0.95}
+              inactiveSlideOpacity={1}
+              enableMomentum={true}
+              activeSlideAlignment={'start'}
+              containerCustomStyle={{
+                marginTop: 15,
+                overflow: 'visible', // for custom animations
+              }}
+              contentContainerCustomStyle={{
+                paddingVertical: 10, // for custom animation
+              }}
+              activeAnimationType={'spring'}
+              activeAnimationOptions={{
+                friction: 4,
+                tension: 40,
+              }}
+              hasParallaxImages={true}
+            />
+          </View>
+        </View>
 
         <View
           style={{
-            position: 'absolute',
-            top: this.h*(0.095),
-            elevation: 20,
-            paddingLeft: '10%',
+            width: '70%',
+            height: this.h * 0.065,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignSelf: 'center',
           }}>
-          <Carousel
-            data={this.state.appData.banners}
-            renderItem={this._renderItem}
-            sliderWidth={sliderWidth}
-            itemWidth={itemWidth}
-            inactiveSlideScale={0.95}
-            inactiveSlideOpacity={1}
-            enableMomentum={true}
-            activeSlideAlignment={'start'}
-            containerCustomStyle={{
-              marginTop: 15,
-              overflow: 'visible', // for custom animations
-            }}
-            contentContainerCustomStyle={{
-              paddingVertical: 10, // for custom animation
-            }}
-            activeAnimationType={'spring'}
-            activeAnimationOptions={{
-              friction: 4,
-              tension: 40,
-            }}
-            hasParallaxImages={true}
-          />
-        </View>
-      </View>
-
-      <View
-        style={{
-          width: '70%',
-          height: this.h*(0.065),
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignSelf: 'center',
-        }}>
-        <Animated.View
-          style={{
-            position: 'absolute',
-            width: '49.5%',
-            height: '100%',
-            backgroundColor: '#55C2FF',
-            transform: [{translateX: this.animatedValue}],
-            borderTopLeftRadius: this.state.swipe ? 0 : 10,
-            borderBottomLeftRadius: this.state.swipe ? 0 : 10,
-            borderTopRightRadius: this.state.swipe ? 10 : 0,
-            borderBottomRightRadius: this.state.swipe ? 10 : 0,
-            borderColor: '#55C2FF',
-            borderWidth: 3,
-          }}>
-          <Text
-            style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}></Text>
-        </Animated.View>
-        <TouchableOpacity
-          onPress={this.animatebackgroundRtoL.bind(this, this.w * 0.35)}
-          style={{width: '49.5%', height: '100%'}}>
-          <View
+          <Animated.View
             style={{
-              width: '100%',
+              position: 'absolute',
+              width: '49.5%',
               height: '100%',
-              backgroundColor: 'transpaarent',
+              backgroundColor: '#55C2FF',
+              transform: [{translateX: this.animatedValue}],
+              borderTopLeftRadius: this.state.swipe ? 0 : 10,
+              borderBottomLeftRadius: this.state.swipe ? 0 : 10,
+              borderTopRightRadius: this.state.swipe ? 10 : 0,
+              borderBottomRightRadius: this.state.swipe ? 10 : 0,
+              borderColor: '#55C2FF',
+              borderWidth: 3,
+            }}>
+            <Text
+              style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}></Text>
+          </Animated.View>
+          <TouchableOpacity
+            onPress={this.animatebackgroundRtoL.bind(this, this.w * 0.35)}
+            style={{width: '49.5%', height: '100%'}}>
+            <View
+              style={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'transpaarent',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderTopLeftRadius: 10,
+                borderBottomLeftRadius: 10,
+                borderColor: '#55C2FF',
+                borderWidth: 2,
+              }}>
+              <Text style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}>
+                Eat -In
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.animatebackgroundLtoR.bind(this, this.w * 0.35)}
+            style={{
+              width: '49.5%',
+              height: '100%',
+              backgroundColor: 'transparent',
               alignItems: 'center',
               justifyContent: 'center',
-              borderTopLeftRadius: 10,
-              borderBottomLeftRadius: 10,
+              borderTopRightRadius: 10,
+              borderBottomRightRadius: 10,
               borderColor: '#55C2FF',
               borderWidth: 2,
             }}>
             <Text style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}>
-              Eat -In
+              Take away
             </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={this.animatebackgroundLtoR.bind(this, this.w * 0.35)}
-          style={{
-            width: '49.5%',
-            height: '100%',
-            backgroundColor: 'transparent',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderTopRightRadius: 10,
-            borderBottomRightRadius: 10,
-            borderColor: '#55C2FF',
-            borderWidth: 2,
-          }}>
-          <Text style={{fontSize: 19, fontWeight: 'bold', color: '#000'}}>
-            Take away
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{width: '100%', height: this.h*(0.23), top: this.h*(0.019)}}>
-        <Text style={{fontSize: 18, fontWeight: 'bold', paddingLeft: '5%'}}>
-          Categories
-        </Text>
-        <View style={{width: '100%', height: '100%', marginTop: '3%'}}>
-          <ScrollView
-            style={{height: '100%'}}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}>
-            {this.getCategories()}
-          </ScrollView>
+          </TouchableOpacity>
         </View>
-      </View>
+        <View
+          style={{width: '100%', height: this.h * 0.23, top: this.h * 0.019}}>
+          <Text style={{fontSize: 18, fontWeight: 'bold', paddingLeft: '5%'}}>
+            Categories
+          </Text>
+          <View style={{width: '100%', height: '100%', marginTop: '3%'}}>
+            <ScrollView
+              style={{height: '100%'}}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              {this.getCategories()}
+            </ScrollView>
+          </View>
+        </View>
       </View>
     );
   }
 
   stickyHeader() {
     return (
-      <View style={{ backgroundColor: '#55C2FF', borderBottomLeftRadius: 30 }}>
+      <View style={{backgroundColor: '#55C2FF', borderBottomLeftRadius: 30}}>
         <TouchableOpacity
-          style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}>
+          style={{flexDirection: 'row', alignItems: 'center', padding: 2}}>
           <Text
             numberOfLines={1}
             style={{
@@ -520,7 +542,7 @@ export default class Orders extends React.Component {
           />
         </TouchableOpacity>
         <ScrollView
-          style={{height: this.h*0.16, width: '100%'}}
+          style={{height: this.h * 0.16, width: '100%'}}
           horizontal={true}
           showsHorizontalScrollIndicator={false}>
           {this.getCategories()}
@@ -536,43 +558,51 @@ export default class Orders extends React.Component {
     });
     console.log(this.props.navigation.getParam('ordermode'));
     return (
-        <ParallaxScrollView
-          style={styles1.container} contentContainerStyle={{flexGrow:1}}
-          backgroundColor={'white'}
-          parallaxHeaderHeight={this.h*0.715}
-          stickyHeaderHeight={this.h*0.2}
-          renderForeground={() => this.getForeground()}
-          renderStickyHeader={() => this.stickyHeader()}
-        >
-          <View style={{width: '100%', height: (this.state.preview)?this.h*(0.23):'0%'}}>
-            <View style={{width: '100%', height: (this.state.preview)?'100%':'0%'}}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                {this.getPreview()}
-                <View style={{width:this.w*(0.09)}}>
-                  <Text></Text>
-                </View>
-              </ScrollView>
-            </View>
+      <ParallaxScrollView
+        style={styles1.container}
+        contentContainerStyle={{flexGrow: 1}}
+        backgroundColor={'white'}
+        parallaxHeaderHeight={this.h * 0.715}
+        stickyHeaderHeight={this.h * 0.2}
+        renderForeground={() => this.getForeground()}
+        renderStickyHeader={() => this.stickyHeader()}>
+        <View
+          style={{
+            width: '100%',
+            height: this.state.preview ? this.h * 0.23 : '0%',
+          }}>
+          <View
+            style={{width: '100%', height: this.state.preview ? '100%' : '0%'}}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              {this.getPreview()}
+              <View style={{width: this.w * 0.09}}>
+                <Text></Text>
+              </View>
+            </ScrollView>
           </View>
+        </View>
 
-
-
-          <View style={{width:'100%', top:this.h*(0.01), marginBottom:this.h*(0.03)}}>
-            <OrderList
-              navigation={this.props.navigation}
-              list={this.state.list}
-              listItems={this.state.appData[this.state.listName]}
-            />
-          </View>
-        </ParallaxScrollView>
+        <View
+          style={{
+            width: '100%',
+            top: this.h * 0.01,
+            marginBottom: this.h * 0.03,
+          }}>
+          <OrderList
+            navigation={this.props.navigation}
+            list={this.state.list}
+            listItems={this.state.appData[this.state.listName]}
+          />
+        </View>
+      </ParallaxScrollView>
     );
   }
 }
 
 const styles1 = StyleSheet.create({
-  container: {width:'100%', height:'100%'},
+  container: {width: '100%', height: '100%'},
   text: {marginVertical: 16},
   locationHeader: {
     height: Dimensions.get('screen').height * 0.16,

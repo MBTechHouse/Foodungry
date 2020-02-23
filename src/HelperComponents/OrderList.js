@@ -53,16 +53,17 @@ export default class OrderList extends React.Component {
     console.log("Clciked",event.nativeEvent.layout)
   }
 
-handlePress(evt){
+handlePress(evt, restUUID){
+  console.log("restUUI", restUUID)
   console.log(`x coord = ${evt.nativeEvent.locationX.toFixed(2)} y coord = ${evt.nativeEvent.locationY.toFixed(2)}`);
-  this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode')})
+  this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode'), restUUID: restUUID})
 }
 
   restCard(rest) {
     return (
       <Layout style={{ width:'100%', flexDirection:'row', height:100, backgroundColor:'#FFFFFF' }} >
         <TouchableOpacity style={{width:'90%', flexDirection:'row', height:'100%', justifyContent: 'center', alignItems: 'center' }}
-          onPress={(evt) => this.handlePress(evt)}
+          onPress={(evt) => this.handlePress(evt, rest.uuid)}
         >
 
             <View  style={{ position:'absolute', elevation:6, left:7, height:70, width: 85, borderRadius:20 }} >

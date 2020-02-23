@@ -4,70 +4,53 @@ import { Button, Layout, Text, Icon } from 'react-native-ui-kitten';
 import {BoxShadow} from 'react-native-shadow';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { Viewport } from '@skele/components'
+import firebase from 'firebase'
 
 const ViewportAwareView = Viewport.Aware(View)
 
 export default class Orderitems extends React.Component{
 
-
-
-  state = {
-    items: {
-      0: {
-        title:'Cafe Frappe',
-        description: 'Coffee',
-        actualPrice: 90,
-        quantity:0,
-        type:0
-      },
-      1: {
-        title:'Macroni',
-        description: 'Noodles',
-        actualPrice: 110,
-        quantity:0,
-        type:1
-      },
-      2: {
-        title:'Margherita',
-        description: 'Pizza',
-        actualPrice: 210,
-        quantity:0,
-        type:2
-      },
-      3: {
-        title:'Softy',
-        description: 'Ice Cream',
-        actualPrice: 50,
-        quantity:0,
-        type:1
-      },
-
-    },
-
-    cart:{},
-    totalPrice: 0,
-    totalItems: 0,
-    categoryList:{
-      cat0:{id:0,name:'Starters'},
-      cat1:{id:1,name:'Breads'},
-      cat2:{id:2,name:'Salads'},
-      cat3:{id:3,name:'Main Course'},
-      cat4:{id:4,name:'Deserts'},
-      cat5:{id:5,name:'Chinese'},
-      cat6:{id:6,name:'Continental'},
-      cat7:{id:7,name:'Burgers'},
-      cat8:{id:8,name:'Rice'},
-
-  },
-  currentCategorySelected:0
-  }
   screenWidth = Dimensions.get('screen').width
   screenHeight = Dimensions.get('screen').height
 
+  state = {
+    items: {},
+    cart:{},
+    totalPrice: 0,
+    totalItems: 0,
+    categoryList:[],
+  currentCategorySelected:null
+  }
+
+  async fetchItemsFromDB(restUUID) {
+    categoryList = []
+    items = {}
+    await firebase.database().ref(`restaurants/${restUUID}/categories`).on('value',(categories=>{
+      firebase.database().ref(`restaurants/${restUUID}/foodItems`).on('value',(foodItems=>{
+      Object.entries(categories.val()).map(([categoryId, categoryVal])=>{
+        let categoryObject = {...categoryVal}
+        categoryObject["categoryId"] = categoryId
+        categoryList.push(categoryObject)
+        items[categoryId] = {}
+      })
+      Object.entries(foodItems.val()).map(([foodItemId, foodItem])=>{
+        let foodObject = {...foodItem}
+        foodObject["quantity"] = 0
+        items[foodItem.category][foodItemId] = foodObject
+      })
+      this.setState({categoryList:categoryList, currentCategorySelected:categoryList[0].categoryId, items:items})
+      }))
+    }))
+  }
+
+  componentDidMount() {
+    let restUUID = this.props.navigation.state.params.restUUID
+    this.fetchItemsFromDB(restUUID)
+  }
   
   renderCartButton(key,item)
   {
-
+    
     if(item.quantity == 0)
     {
       return <TouchableOpacity style={{backgroundColor:'#fff'}} 
@@ -76,7 +59,7 @@ export default class Orderitems extends React.Component{
         let cart = this.state.cart
         let totalItems = this.state.totalItems
         let totalPrice = this.state.totalPrice
-        items[key].quantity = items[key].quantity + 1
+        items[this.state.currentCategorySelected][key].quantity = items[this.state.currentCategorySelected][key].quantity + 1
         totalItems = totalItems + 1
         totalPrice = totalPrice + item.actualPrice
         cart[key] = item
@@ -97,8 +80,8 @@ export default class Orderitems extends React.Component{
           let totalPrice = this.state.totalPrice
           totalItems = totalItems + 1
           totalPrice = totalPrice + item.actualPrice
-        items[key].quantity = items[key].quantity + 1
-        cart[key] = items[key]
+        items[this.state.currentCategorySelected][key].quantity = items[this.state.currentCategorySelected][key].quantity + 1
+        cart[key] = items[this.state.currentCategorySelected][key]
         this.setState({items:items, cart:cart,totalPrice:totalPrice, totalItems:totalItems})
          }}>
         <Image source={require('../resources/icons/plus-nobg.png')} style={{width:30, height:30, tintColor:'#fff'}}/>
@@ -112,9 +95,9 @@ export default class Orderitems extends React.Component{
           let totalPrice = this.state.totalPrice
           totalItems = totalItems - 1
           totalPrice = totalPrice - item.actualPrice
-          items[key].quantity = items[key].quantity - 1
-          cart[key] = items[key]
-          if(items[key].quantity==0)
+          items[this.state.currentCategorySelected][key].quantity = items[this.state.currentCategorySelected][key].quantity - 1
+          cart[key] = items[this.state.currentCategorySelected][key]
+          if(items[this.state.currentCategorySelected][key].quantity==0)
           {
             delete cart[key]
             this.setState({items:items,cart:cart, totalPrice:totalPrice, totalItems:totalItems})
@@ -133,7 +116,8 @@ export default class Orderitems extends React.Component{
   {
 
     var items = []
-    var stateItems = this.state.items
+    if(this.state.currentCategorySelected!==null){
+    var stateItems = this.state.items[this.state.currentCategorySelected]
 
     Object.entries(stateItems).forEach(([key,item]) => {
       items.push(<BoxShadow setting={{
@@ -170,6 +154,7 @@ export default class Orderitems extends React.Component{
   </View>
   </BoxShadow>)
     })
+  }
     return items
   }
 
@@ -221,7 +206,8 @@ export default class Orderitems extends React.Component{
     console.log("Total Price",this.state.totalPrice)
     console.log("Total Items",this.state.totalItems)
     console.log("Cart", this.state.cart)
-    console.log("nav", this.props.navigation.getParam('ordermode'))
+    console.log("Category List", this.state.categoryList)
+    console.log("Items", this.state.items)
   return(
     <View>
       <Viewport.Tracker>
@@ -267,8 +253,9 @@ export default class Orderitems extends React.Component{
     <View style={{width:'100%',height:this.screenHeight*0.1,top:this.screenHeight*0.035}}>
     <ScrollView style={{flex:1, }} horizontal={true} showsHorizontalScrollIndicator={false}>
     {
-      Object.values(this.state.categoryList).map(category=>{
-        if(this.state.currentCategorySelected==category.id)
+      this.state.categoryList.map(category=>{
+        console.log(category.name, category.categoryId)
+        if(this.state.currentCategorySelected==category.categoryId)
         {
           return <TouchableOpacity 
         style={{ height:'100%',
@@ -287,7 +274,7 @@ export default class Orderitems extends React.Component{
         marginLeft:this.screenWidth*0.03,
         marginRight:this.screenWidth*0.03,
         alignItems:'center'}}
-        onPress={()=>{this.setState({currentCategorySelected:category.id})}}
+        onPress={()=>{this.setState({currentCategorySelected:category.categoryId})}}
         >
             <Text style={{fontSize:16}}>{category.name}</Text>
           </TouchableOpacity>

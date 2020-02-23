@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "193096773571",
+    "firebase_url": "https://foodungry-e5e61.firebaseio.com",
+    "project_id": "foodungry-e5e61",
+    "storage_bucket": "foodungry-e5e61.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193096773571:android:6a7e14145ad89a56aad776",
+        "android_client_info": {
+          "package_name": "com.foodungry"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "193096773571-k6p3takm60833lgp3069bef6kfddhot3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.foodungry",
+            "certificate_hash": "109982edb36400444d25894e85c1b19d05150c49"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_WWB76puvd8A1Bd2a6QgnCzqiXVS3SL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193096773571-25jkqk4jlb0j940pnn4eco68v1saovi5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
