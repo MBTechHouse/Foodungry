@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View } from 'react-native';
 import { Button, Layout, Text, Icon, Input } from 'react-native-ui-kitten';
-export default class ViewCart extends React.Component{
+import firebase from 'firebase';
 
+export default class ViewCart extends React.Component{
 
   static navigationOptions = {
      header:null
@@ -128,6 +129,33 @@ export default class ViewCart extends React.Component{
     return <Text style={{ fontSize: 18, alignItems: 'center', color: '#aaa', fontFamily: 'serif', marginLeft: '28%', marginTop: '10%' }}>CART IS EMPTY</Text>
   }
 
+  getTimestamp(h,m) {
+    var t = new Date();
+    t.setHours(t.getUTCHours() + h);
+    t.setMinutes(t.getUTCMinutes() + m);
+
+    var timestamp =
+        t.getUTCFullYear() + "_" +
+        ("0" + (t.getMonth()+1)).slice(-2) + "_" +
+        ("0" + t.getDate()).slice(-2) + "_" +
+        ("0" + t.getHours()).slice(-2) + "_" +
+        ("0" + t.getMinutes()).slice(-2) + "_" +
+        ("0" + t.getSeconds()).slice(-2) + "_" +
+        ("0" + t.getMilliseconds()).slice(-2);
+
+    return timestamp;
+  }
+
+  uploadOrder() {
+
+    firebase.database().ref('orders/order_' + this.getTimestamp(5,30)).update({
+      restId: 'dummy', //this.state.restId,
+      userId: firebase.auth().currentUser.uid,
+      custArrival: this.state.customerArrivalTime,
+      items: this.state.cart,
+      totalPrice: this.state.totalPrice
+    });
+  }
 
   render()
   {
@@ -171,7 +199,9 @@ export default class ViewCart extends React.Component{
         {this.getScrollView()}
       </ScrollView>
       <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
-                                flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}>
+                                flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
+                        onPress={() => this.uploadOrder()}
+      >
             <Layout style={{width:'67%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
               <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems?this.state.totalItems:'0'} Items</Text>
               <Text style={{color:'#fff'}}>₹ {this.state.totalPrice?this.state.totalPrice:'0'}</Text>
