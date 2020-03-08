@@ -53,17 +53,16 @@ export default class OrderList extends React.Component {
     console.log("Clciked",event.nativeEvent.layout)
   }
 
-handlePress(evt, restUUID){
-  console.log("restUUI", restUUID)
+handlePress(evt, restId){
   console.log(`x coord = ${evt.nativeEvent.locationX.toFixed(2)} y coord = ${evt.nativeEvent.locationY.toFixed(2)}`);
-  this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode'), restUUID: restUUID})
+  this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode'), restId: restId})
 }
 
-  restCard(rest) {
+  restCard(restId, rest) {
     return (
       <Layout style={{ width:'100%', flexDirection:'row', height:100, backgroundColor:'#FFFFFF' }} >
         <TouchableOpacity style={{width:'90%', flexDirection:'row', height:'100%', justifyContent: 'center', alignItems: 'center' }}
-          onPress={(evt) => this.handlePress(evt, rest.uuid)}
+          onPress={(evt) => this.handlePress(evt, restId)}
         >
 
             <View  style={{ position:'absolute', elevation:6, left:7, height:70, width: 85, borderRadius:20 }} >
@@ -112,7 +111,7 @@ handlePress(evt, restUUID){
   {
     let renderArray = [];
     for(let i=0; i<this.state.list.length; i++)
-      renderArray.push(this.restCard(this.state.listItems[this.state.list[i]]))
+      renderArray.push(this.restCard(this.state.list[i], this.state.listItems[this.state.list[i]]))
     return renderArray
   }
 

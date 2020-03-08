@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View, Alert } from 'react-native';
 import { Button, Layout, Text, Icon, Input } from 'react-native-ui-kitten';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import StepProgress from 'react-native-step-progress';
 import firebase from 'firebase';
 
 export default class ViewCart extends React.Component{
@@ -13,19 +15,37 @@ export default class ViewCart extends React.Component{
   screenHeight = Dimensions.get('screen').height
 
   state={
-    customerArrivalTime:'',
+    arrTime: '',
     cart:{},
     totalPrice:0,
-    totalItems:0
+    totalItems:0,
+    restId: '',
+    showPicker: false,
+    pendingOrd: 0,
+    step: 0
   }
 
   componentDidMount()
   {
-      this.setState({
-        cart: this.props.navigation.getParam('cart'),
-        totalPrice: this.props.navigation.getParam('totalPrice'),
-        totalItems: this.props.navigation.getParam('totalItems')
-      });
+    firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/pendingOrd')
+      .on('value', snapshot => this.setState({ pendingOrd: snapshot.val() }, () => {
+        if(this.state.pendingOrd == 1) {
+          firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/myOrders')
+          .once('value', order => {
+            let arr = Object.keys(order.val())
+            firebase.database().ref('orders/'+arr[arr.length-1]+'/status')
+            .on('value', status => this.setState({ step: status.val() }))
+          });
+        }
+      }
+    ));
+
+    this.setState({
+      cart: this.props.navigation.getParam('cart'),
+      totalPrice: this.props.navigation.getParam('totalPrice'),
+      totalItems: this.props.navigation.getParam('totalItems'),
+      restId: '1RNk7guJOkSSAB3fxfgO21HJnvp1'
+    });
   }
 
   renderCartButton(key,item)
@@ -124,6 +144,13 @@ export default class ViewCart extends React.Component{
               <Text style={{position:'absolute', right: 10}}>₹ {this.state.totalPrice}</Text>
             </Layout>
           </Layout>
+          <TouchableOpacity
+            style={{ width: '50%', borderRadius: 25, borderWidth: 0, padding: '2%',
+            backgroundColor: '#55C2FF', marginTop: '5%', alignSelf: 'center' }}
+            onPress={() => this.setState({ showPicker: true })}
+          >
+            <Text style={{ alignSelf: 'center', color: 'white' }}>Set Arrival Time</Text>
+          </TouchableOpacity>
         </View>
       );
     return <Text style={{ fontSize: 18, alignItems: 'center', color: '#aaa', fontFamily: 'serif', marginLeft: '28%', marginTop: '10%' }}>CART IS EMPTY</Text>
@@ -147,20 +174,96 @@ export default class ViewCart extends React.Component{
   }
 
   uploadOrder() {
+    if(this.state.arrTime == '') {
+      Alert.alert("Oops...", "Please specify your Arrival Time.")
+      return
+    }
 
-    firebase.database().ref('orders/order_' + this.getTimestamp(5,30)).update({
-      restId: 'dummy', //this.state.restId,
+    let t = this.getTimestamp(5,30)
+    let at = this.state.arrTime
+    let oid = "order_" +
+        at.getUTCFullYear() + "_" +
+        ("0" + (at.getMonth()+1)).slice(-2) + "_" +
+        ("0" + at.getDate()).slice(-2) + "_" +
+        ("0" + at.getHours()).slice(-2) + "_" +
+        ("0" + at.getMinutes()).slice(-2) + "_" +
+        ("0" + at.getSeconds()).slice(-2) + "_" +
+        ("0" + at.getMilliseconds()).slice(-2);
+    let ord = {
+      restId: this.state.restId,
       userId: firebase.auth().currentUser.uid,
-      custArrival: this.state.customerArrivalTime,
+      ordTime: t.split('_')[2]+"/"+t.split('_')[1]+"/"+t.split('_')[0]+"_"+t.split('_')[3]+":"+t.split('_')[4],
       items: this.state.cart,
-      totalPrice: this.state.totalPrice
+      totalPrice: this.state.totalPrice,
+      status: 0
+    }
+
+    let temp = {}
+
+    temp['orders/' + oid] = ord
+    temp['users/' + firebase.auth().currentUser.uid + '/pendingOrd'] = 1
+    temp['users/' + firebase.auth().currentUser.uid + '/myOrders/' + oid] = "-"
+    temp['restaurants/' + this.state.restId + '/myOrders/' + oid] = "-"
+
+    firebase.database().ref().update(temp);
+
+    firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/myOrders')
+    .once('value', order => {
+      let arr = Object.keys(order.val())
+      firebase.database().ref('orders/'+arr[arr.length-1]+'/status')
+      .on('value', status => this.setState({ step: status.val() }))
     });
+  }
+
+  footer() {
+    if(this.state.pendingOrd == 1) {
+      let labels = ['Order\nRequested', 'Preparing\nYour Food', 'Food Is\nReady']
+
+      return (
+        <Layout style={{ marginBottom: '10%' }}>
+          <StepProgress
+              customStyles={customStyles}
+              currentPosition={this.state.step + 1}
+              stepCount={3}
+              labels={labels}
+          />
+        </Layout>
+      )
+    }
+    return (
+      <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
+                                flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
+                        onPress={() => this.uploadOrder()}
+      >
+            <Layout style={{width:'67%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
+              <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems?this.state.totalItems:'0'} Items</Text>
+              <Text style={{color:'#fff'}}>₹ {this.state.totalPrice?this.state.totalPrice:'0'}</Text>
+            </Layout>
+
+            <Layout style={{alignItems:'center', backgroundColor: 'transparent', alignItems:'center', flexDirection:"row"}}>
+              <Text style={{color:'#fff'}}>Place Order</Text>
+              <Icon name='arrow-right' width={20} height={20} fill='#fff' />
+            </Layout>
+        </TouchableOpacity>
+    )
   }
 
   render()
   {
     return(
       <View style={styles.container}>
+        <DateTimePickerModal
+          isVisible={this.state.showPicker}
+          mode="time"
+          onConfirm={time => {
+            let d = new Date(time)
+            if(d < Date.now())
+              Alert.alert("Oops...", "Select a valid arrival time.")
+            else
+              this.setState({ arrTime: new Date(time), showPicker: false })
+          }}
+          onCancel={() => this.setState({ showPicker: false })}
+        />
         <Layout style={{backgroundColor: '#55C2FF', borderLeftColor: '#A6E7F9', borderLeftWidth: 15, borderBottomColor: '#A6E7F9', borderBottomWidth: 7, borderBottomLeftRadius: 40, flexDirection:'row'}}>
           <Text
             numberOfLines={1}
@@ -198,20 +301,7 @@ export default class ViewCart extends React.Component{
       <ScrollView style={styles.container}>
         {this.getScrollView()}
       </ScrollView>
-      <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
-                                flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
-                        onPress={() => this.uploadOrder()}
-      >
-            <Layout style={{width:'67%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
-              <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems?this.state.totalItems:'0'} Items</Text>
-              <Text style={{color:'#fff'}}>₹ {this.state.totalPrice?this.state.totalPrice:'0'}</Text>
-            </Layout>
-
-            <Layout style={{alignItems:'center', backgroundColor: 'transparent', alignItems:'center', flexDirection:"row"}}>
-              <Text style={{color:'#fff'}}>Place Order</Text>
-              <Icon name='arrow-right' width={20} height={20} fill='#fff' />
-            </Layout>
-        </TouchableOpacity>
+      {this.footer()}
       </View>
     );
   }
@@ -221,3 +311,27 @@ const styles = StyleSheet.create({
   container: { height:'100%',width:'100%',  backgroundColor:'#fff' },
   text: { marginVertical: 16 },
 });
+
+customStyles = {
+  stepIndicatorSize: 30,
+  currentStepIndicatorSize:30,
+  separatorStrokeWidth: 2,
+  currentStepStrokeWidth: 3,
+  stepStrokeCurrentColor: '#55C2FF',
+  stepStrokeWidth: 3,
+  stepStrokeFinishedColor: '#55C2FF',
+  stepStrokeUnFinishedColor: '#aaaaaa',
+  separatorFinishedColor: '#55C2FF',
+  separatorUnFinishedColor: '#aaaaaa',
+  stepIndicatorFinishedColor: '#55C2FF',
+  stepIndicatorUnFinishedColor: '#ffffff',
+  stepIndicatorCurrentColor: '#ffffff',
+  stepIndicatorLabelFontSize: 13,
+  currentStepIndicatorLabelFontSize: 13,
+  stepIndicatorLabelCurrentColor: '#55C2FF',
+  stepIndicatorLabelFinishedColor: '#ffffff',
+  stepIndicatorLabelUnFinishedColor: '#aaaaaa',
+  labelColor: '#999999',
+  labelSize: 13,
+  currentStepLabelColor: '#55C2FF'
+}

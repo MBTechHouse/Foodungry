@@ -122,7 +122,8 @@ export default class Signup extends Component {
         firebase.database().ref().child('users').child(firebase.auth().currentUser.uid).set({
             email: this.state.email,
             name: this.state.name,
-            phone: this.state.phone
+            phone: this.state.phone,
+            pendingOrd: 0
           },()=>{this.props.navigation.navigate('Orders')})
     })
      .catch(() => this.setState({hasError: true, errorText: 'Invalid Credentials !', loading: false }));

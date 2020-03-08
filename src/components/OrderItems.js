@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View, TouchableHighlight } from 'react-native';
+import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View, TouchableHighlight, ToastAndroid } from 'react-native';
 import { Button, Layout, Text, Icon } from 'react-native-ui-kitten';
 import {BoxShadow} from 'react-native-shadow';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { Viewport } from '@skele/components'
 import firebase from 'firebase'
+import { Toast } from 'native-base';
 
 const ViewportAwareView = Viewport.Aware(View)
 
@@ -22,11 +23,11 @@ export default class Orderitems extends React.Component{
   currentCategorySelected:null
   }
 
-  async fetchItemsFromDB(restUUID) {
+  async fetchItemsFromDB(restId) {
     categoryList = []
     items = {}
-    await firebase.database().ref(`restaurants/${restUUID}/categories`).on('value',(categories=>{
-      firebase.database().ref(`restaurants/${restUUID}/foodItems`).on('value',(foodItems=>{
+    await firebase.database().ref(`restaurants/${restId}/categories`).on('value',(categories=>{
+      firebase.database().ref(`restaurants/${restId}/foodItems`).on('value',(foodItems=>{
       Object.entries(categories.val()).map(([categoryId, categoryVal])=>{
         let categoryObject = {...categoryVal}
         categoryObject["categoryId"] = categoryId
@@ -44,8 +45,7 @@ export default class Orderitems extends React.Component{
   }
 
   componentDidMount() {
-    let restUUID = this.props.navigation.state.params.restUUID
-    this.fetchItemsFromDB(restUUID)
+    this.fetchItemsFromDB(this.props.navigation.state.params.restId)
   }
   
   renderCartButton(key,item)
