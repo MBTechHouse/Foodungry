@@ -57,7 +57,7 @@ export default class Signup extends Component {
             </Item>
             <Item>
                 <Icon active name='ios-person' style={{color: '#01bff1'}} />
-                <Input placeholder='Company Name' onChangeText={(text) => this.setState({name: text})} placeholderTextColor="#888" />
+                <Input placeholder='Name' onChangeText={(text) => this.setState({name: text})} placeholderTextColor="#888" />
             </Item>
             <Item>
                 <Icon active name='ios-phone-portrait' style={{color: '#01bff1'}} />

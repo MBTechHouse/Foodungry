@@ -520,9 +520,9 @@ export default class Orders extends React.Component {
 
   stickyHeader() {
     return (
-      <View style={{backgroundColor: '#55C2FF', borderBottomLeftRadius: 30}}>
+      <View style={{ borderBottomLeftRadius: 30 }}>
         <TouchableOpacity
-          style={{flexDirection: 'row', alignItems: 'center', padding: 2}}>
+          style={{ flexDirection: 'row', alignItems: 'center', padding: 2, backgroundColor: '#55C2FF' }}>
           <Text
             numberOfLines={1}
             style={{
@@ -558,30 +558,27 @@ export default class Orders extends React.Component {
     });
     console.log(this.props.navigation.getParam('ordermode'));
     return (
-      <ParallaxScrollView
-        style={styles1.container}
-        contentContainerStyle={{flexGrow: 1}}
-        backgroundColor={'white'}
-        parallaxHeaderHeight={this.h * 0.715}
-        stickyHeaderHeight={this.h * 0.2}
-        renderForeground={() => this.getForeground()}
-        renderStickyHeader={() => this.stickyHeader()}>
-        <View
-          style={{
-            width: '100%',
-            height: this.state.preview ? this.h * 0.23 : '0%',
-          }}>
-          <View
-            style={{width: '100%', height: this.state.preview ? '100%' : '0%'}}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}>
-              {this.getPreview()}
-              <View style={{width: this.w * 0.09}}>
-                <Text></Text>
-              </View>
-            </ScrollView>
-          </View>
+        <ParallaxScrollView
+          style={styles1.container} contentContainerStyle={{flexGrow:1}}
+          backgroundColor={'white'}
+          parallaxHeaderHeight={this.h*0.715}
+          stickyHeaderHeight={this.h*0.2}
+          renderForeground={() => this.getForeground()}
+          renderStickyHeader={() => this.stickyHeader()}
+          fadeOutForeground={false}
+          fadeOutBackground={false}
+        >
+          <View style={{width: '100%', height: (this.state.preview)?this.h*(0.23):'0%'}}>
+            <View style={{width: '100%', height: (this.state.preview)?'100%':'0%'}}>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}>
+                {this.getPreview()}
+                <View style={{width:this.w*(0.09)}}>
+                  <Text></Text>
+                </View>
+              </ScrollView>
+            </View>
         </View>
 
         <View

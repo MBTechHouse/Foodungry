@@ -167,13 +167,13 @@ export default class Orderitems extends React.Component{
                                   flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
                           onPress={()=>{this.props.navigation.navigate('ViewCart', {cart: this.state.cart, totalPrice: this.state.totalPrice, totalItems: this.state.totalItems, ordermode:this.props.navigation.getParam('ordermode')})}}
         >
-              <Layout style={{width:'63%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
+              <Layout style={{width:'70%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
                 <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems} Items</Text>
                 <Text style={{color:'#fff'}}>Rs {this.state.totalPrice} + taxes</Text>
               </Layout>
 
               <Layout style={{alignItems:'center', backgroundColor: 'transparent', alignItems:'center', flexDirection:"row"}}>
-                <Text style={{color:'#fff'}}>VIEW CART</Text>
+                <Text style={{color:'#fff'}}>View Cart</Text>
                 <Icon name='arrow-right' width={20} height={20} fill='#fff' />
               </Layout>
           </TouchableOpacity>
