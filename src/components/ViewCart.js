@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View, Alert } from 'react-native';
+import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View, Alert, ToastAndroid } from 'react-native';
 import { Button, Layout, Text, Icon, Input } from 'react-native-ui-kitten';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import StepProgress from 'react-native-step-progress';
@@ -16,19 +16,21 @@ export default class ViewCart extends React.Component{
 
   state={
     arrTime: '',
+    ordTime: '',
     cart:{},
     totalPrice:0,
     totalItems:0,
     restId: '',
     showPicker: false,
     pendingOrd: 0,
+    phone: '',
     step: 0
   }
 
   componentDidMount()
   {
-    firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/pendingOrd')
-      .on('value', snapshot => this.setState({ pendingOrd: snapshot.val() }, () => {
+    firebase.database().ref('users/'+firebase.auth().currentUser.uid)
+      .on('value', snapshot => this.setState({ pendingOrd: snapshot.val().pendingOrd, phone: snapshot.val().phone }, () => {
         if(this.state.pendingOrd == 1) {
           firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/myOrders')
           .once('value', order => {
@@ -149,50 +151,30 @@ export default class ViewCart extends React.Component{
             backgroundColor: '#55C2FF', marginTop: '5%', alignSelf: 'center' }}
             onPress={() => this.setState({ showPicker: true })}
           >
-            <Text style={{ alignSelf: 'center', color: 'white' }}>Set Arrival Time</Text>
+            <Text style={{ alignSelf: 'center', color: 'white' }}>Arrival Time {this.formTime(this.state.arrTime)}</Text>
           </TouchableOpacity>
         </View>
       );
     return <Text style={{ fontSize: 18, alignItems: 'center', color: '#aaa', fontFamily: 'serif', marginLeft: '28%', marginTop: '10%' }}>CART IS EMPTY</Text>
   }
 
-  getTimestamp(h,m) {
-    var t = new Date();
-    t.setHours(t.getUTCHours() + h);
-    t.setMinutes(t.getUTCMinutes() + m);
-
-    var timestamp =
-        t.getUTCFullYear() + "_" +
-        ("0" + (t.getMonth()+1)).slice(-2) + "_" +
-        ("0" + t.getDate()).slice(-2) + "_" +
-        ("0" + t.getHours()).slice(-2) + "_" +
-        ("0" + t.getMinutes()).slice(-2) + "_" +
-        ("0" + t.getSeconds()).slice(-2) + "_" +
-        ("0" + t.getMilliseconds()).slice(-2);
-
-    return timestamp;
-  }
-
   uploadOrder() {
-    if(this.state.arrTime == '') {
+    if(this.state.arrTime == '-:-') {
       Alert.alert("Oops...", "Please specify your Arrival Time.")
       return
     }
 
-    let t = this.getTimestamp(5,30)
-    let at = this.state.arrTime
-    let oid = "order_" +
-        at.getUTCFullYear() + "_" +
-        ("0" + (at.getMonth()+1)).slice(-2) + "_" +
-        ("0" + at.getDate()).slice(-2) + "_" +
-        ("0" + at.getHours()).slice(-2) + "_" +
-        ("0" + at.getMinutes()).slice(-2) + "_" +
-        ("0" + at.getSeconds()).slice(-2) + "_" +
-        ("0" + at.getMilliseconds()).slice(-2);
+    let t = Date.now()
+    if(this.state.arrTime < Date.now()) {
+      Alert.alert("Oops...", "Select a valid arrival time.")
+      return
+    }
+    this.setState({ ordTime: t })
+    let oid = "order_" + this.state.arrTime
     let ord = {
       restId: this.state.restId,
       userId: firebase.auth().currentUser.uid,
-      ordTime: t.split('_')[2]+"/"+t.split('_')[1]+"/"+t.split('_')[0]+"_"+t.split('_')[3]+":"+t.split('_')[4],
+      ordTime: t,
       items: this.state.cart,
       totalPrice: this.state.totalPrice,
       status: 0
@@ -215,18 +197,29 @@ export default class ViewCart extends React.Component{
     });
   }
 
+  formTime(time) {
+    if(time == '')
+      return '-:-'
+    let at = new Date(time)
+    return at.getHours()+":"+at.getMinutes()
+  }
+
   footer() {
     if(this.state.pendingOrd == 1) {
       let labels = ['Order\nRequested', 'Preparing\nYour Food', 'Food Is\nReady']
 
       return (
-        <Layout style={{ marginBottom: '10%' }}>
+        <Layout>
           <StepProgress
               customStyles={customStyles}
               currentPosition={this.state.step + 1}
               stepCount={3}
               labels={labels}
           />
+          <Layout style={{ flexDirection: 'row', padding: 10, backgroundColor: '#D2F3FC', marginTop: '2%' }}>
+            <Text style={{ fontSize: 12 }}>Order Time: {this.formTime(this.state.ordTime)}</Text>
+            <Text style={{ alignSelf: 'center', position: 'absolute', fontSize: 12, right: 10}}>Id#: {this.state.arrTime}</Text>
+          </Layout>
         </Layout>
       )
     }
@@ -256,11 +249,11 @@ export default class ViewCart extends React.Component{
           isVisible={this.state.showPicker}
           mode="time"
           onConfirm={time => {
-            let d = new Date(time)
+            let d = Date.parse(time)
             if(d < Date.now())
               Alert.alert("Oops...", "Select a valid arrival time.")
             else
-              this.setState({ arrTime: new Date(time), showPicker: false })
+              this.setState({ arrTime: d, showPicker: false })
           }}
           onCancel={() => this.setState({ showPicker: false })}
         />

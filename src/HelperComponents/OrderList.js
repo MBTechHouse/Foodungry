@@ -120,10 +120,10 @@ handlePress(evt, restId){
     console.log(this.panResponder.panHandlers)
     console.log("LocX",this.state.locationX)
     console.log("LocY",this.state.locationY)
-  return (
-    <View style={{width:'100%', height:'100%'}}>
-      {this.renderItems()}
-    </View>
-  );
+    return (
+      <View style={{width:'100%', height:'100%'}}>
+        {this.renderItems()}
+      </View>
+    );
   }
 }
