@@ -156,7 +156,7 @@ export default class ViewCart extends React.Component{
             backgroundColor: '#55C2FF', marginTop: '5%', alignSelf: 'center' }}
             onPress={() => this.setState({ showPicker: true })}
           >
-            <Text style={{ alignSelf: 'center', color: 'white' }}>Arrival Time {this.formTime(this.state.arrTime)}</Text>
+            <Text style={{ alignSelf: 'center', color: 'white' }}>Arrival Time: {this.formTime(this.state.arrTime)}</Text>
           </TouchableOpacity>
         </View>
       );
