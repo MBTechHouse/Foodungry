@@ -22,23 +22,16 @@ export default class ViewCart extends React.Component{
     totalItems:0,
     restId: '',
     showPicker: false,
-    pendingOrd: 0,
-    phone: '',
+    user: {},
     step: 0
   }
 
   componentDidMount()
   {
     firebase.database().ref('users/'+firebase.auth().currentUser.uid)
-      .on('value', snapshot => this.setState({ pendingOrd: snapshot.val().pendingOrd, phone: snapshot.val().phone }, () => {
-        if(this.state.pendingOrd == 1) {
-          firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/myOrders')
-          .once('value', order => {
-            let arr = Object.keys(order.val())
-            firebase.database().ref('orders/'+arr[arr.length-1]+'/status')
-            .on('value', status => this.setState({ step: status.val() }))
-          });
-        }
+      .on('value', snapshot => this.setState({ user: snapshot.val() }, () => {
+        if(this.state.user.pendingOrd == 1)
+          this.updatePage()
       }
     ));
 
@@ -47,6 +40,18 @@ export default class ViewCart extends React.Component{
       totalPrice: this.props.navigation.getParam('totalPrice'),
       totalItems: this.props.navigation.getParam('totalItems'),
       restId: '1RNk7guJOkSSAB3fxfgO21HJnvp1'
+    });
+  }
+
+  updatePage() {
+    firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/myOrders')
+    .once('value', order => {
+      let arr = Object.keys(order.val())
+      firebase.database().ref('orders/'+arr[arr.length-1])
+      .on('value', ord => this.setState({ step: ord.val().status, ordTime: ord.val().ordTime, arrTime: parseFloat(arr[arr.length-1].split('_')[1]) }, () => {
+        if(this.state.step == 3)
+          firebase.database().ref('users/'+firebase.auth().currentUser.uid).update({ pendingOrd: 0 })
+      }))
     });
   }
 
@@ -159,21 +164,24 @@ export default class ViewCart extends React.Component{
   }
 
   uploadOrder() {
-    if(this.state.arrTime == '-:-') {
+    let at = this.state.arrTime
+    if(at == '-:-') {
       Alert.alert("Oops...", "Please specify your Arrival Time.")
       return
     }
 
     let t = Date.now()
-    if(this.state.arrTime < Date.now()) {
+    if(at < Date.now()) {
       Alert.alert("Oops...", "Select a valid arrival time.")
+      this.setState({ arrTime: '' })
       return
     }
     this.setState({ ordTime: t })
-    let oid = "order_" + this.state.arrTime
+    let oid = "order_" + at
     let ord = {
       restId: this.state.restId,
-      userId: firebase.auth().currentUser.uid,
+      email: this.state.user.email,
+      phone: this.state.user.phone,
       ordTime: t,
       items: this.state.cart,
       totalPrice: this.state.totalPrice,
@@ -205,7 +213,7 @@ export default class ViewCart extends React.Component{
   }
 
   footer() {
-    if(this.state.pendingOrd == 1) {
+    if(this.state.user.pendingOrd == 1) {
       let labels = ['Order\nRequested', 'Preparing\nYour Food', 'Food Is\nReady']
 
       return (
@@ -249,7 +257,7 @@ export default class ViewCart extends React.Component{
           isVisible={this.state.showPicker}
           mode="time"
           onConfirm={time => {
-            let d = Date.parse(time)
+            let d = Date.parse(time) + Date.now()%10000
             if(d < Date.now())
               Alert.alert("Oops...", "Select a valid arrival time.")
             else
