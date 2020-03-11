@@ -9,7 +9,7 @@ export default class Profile extends React.Component{
   {
   return(
   <Layout style={styles.container}>
-    <SettingsScreen {...contactData} />
+    <SettingsScreen {...contactData} navigation={this.props.navigation} />
   </Layout>
   )
   }

@@ -17,6 +17,7 @@ import ViewCart from './ViewCart'
 import HomeScreen from './HomeScreen.js'
 import Login from './Login.js'
 import Signup from './Signup.js'
+import CustomerFeeback from './CustomerFeedback'
 
 import AddButton from '../components/BottomNavHelper/AddButton'
 
@@ -24,13 +25,16 @@ const OrderNavigator = createStackNavigator(
   {
     Orders: Orders,
     OrderItemList: OrderItems,
-    ViewCart: ViewCart
+    ViewCart: ViewCart,
+    CustomerFeeback: CustomerFeeback
   },
   {
     initialRouteName: 'Orders',
-  headerMode: 'none'
+    headerMode: 'none'
   }
 );
+
+
 
 const BottomNavigator = createBottomTabNavigator({
   Victor: {

@@ -28,18 +28,23 @@ export default class Orderitems extends React.Component{
     items = {}
     await firebase.database().ref(`restaurants/${restId}/categories`).on('value',(categories=>{
       firebase.database().ref(`restaurants/${restId}/foodItems`).on('value',(foodItems=>{
+        if(categories && categories.val() && categories!==null && categories.val()!==null ) {
       Object.entries(categories.val()).map(([categoryId, categoryVal])=>{
         let categoryObject = {...categoryVal}
         categoryObject["categoryId"] = categoryId
         categoryList.push(categoryObject)
         items[categoryId] = {}
       })
+      if(foodItems!==null && foodItems.val() && foodItems.val()!==null && foodItems.val()) {
       Object.entries(foodItems.val()).map(([foodItemId, foodItem])=>{
         let foodObject = {...foodItem}
         foodObject["quantity"] = 0
+        if(items[foodItem.category])
         items[foodItem.category][foodItemId] = foodObject
       })
-      this.setState({categoryList:categoryList, currentCategorySelected:categoryList[0].categoryId, items:items})
+    }
+    }
+      this.setState({categoryList:categoryList, currentCategorySelected:categoryList.length>0?categoryList[0].categoryId:null, items:items})
       }))
     }))
   }
@@ -118,7 +123,7 @@ export default class Orderitems extends React.Component{
     var items = []
     if(this.state.currentCategorySelected!==null){
     var stateItems = this.state.items[this.state.currentCategorySelected]
-
+    if(stateItems!==undefined && stateItems!==null){
     Object.entries(stateItems).forEach(([key,item]) => {
       items.push(<BoxShadow setting={{
         width: this.screenWidth *0.95,
@@ -154,6 +159,7 @@ export default class Orderitems extends React.Component{
   </View>
   </BoxShadow>)
     })
+  }
   }
     return items
   }
