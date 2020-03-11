@@ -24,10 +24,14 @@ export default class Orderitems extends React.Component{
   }
 
   async fetchItemsFromDB(restId) {
+    console.log(restId)
     categoryList = []
     items = {}
     await firebase.database().ref(`restaurants/${restId}/categories`).on('value',(categories=>{
       firebase.database().ref(`restaurants/${restId}/foodItems`).on('value',(foodItems=>{
+
+    categoryList = []
+    items = {}
         if(categories && categories.val() && categories!==null && categories.val()!==null ) {
       Object.entries(categories.val()).map(([categoryId, categoryVal])=>{
         let categoryObject = {...categoryVal}
