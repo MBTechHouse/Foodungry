@@ -54,6 +54,7 @@ export default class OrderList extends React.Component {
   }
 
 handlePress(evt, restId){
+  console.log(restId)
   console.log(`x coord = ${evt.nativeEvent.locationX.toFixed(2)} y coord = ${evt.nativeEvent.locationY.toFixed(2)}`);
   this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode'), restId: restId})
 }
