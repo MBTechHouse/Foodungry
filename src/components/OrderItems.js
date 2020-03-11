@@ -73,8 +73,8 @@ export default class Orderitems extends React.Component{
     let categoryList = []
     let items = {}
     console.log(`restaurants/${restUUID}/draftFoodItems/categories`)
-    await firebase.database().ref(`restaurants/DLx2JOjCFVfTaQhShfbj3ZLmbOI3/draftFoodItems/categories`).on('value',(categories=>{
-      firebase.database().ref(`restaurants/DLx2JOjCFVfTaQhShfbj3ZLmbOI3/draftFoodItems/foodItems`).on('value',(foodItems=>{
+    await firebase.database().ref(`restaurants/${restUUID}/draftFoodItems/categories`).on('value',(categories=>{
+      firebase.database().ref(`restaurants/${restUUID}/draftFoodItems/foodItems`).on('value',(foodItems=>{
         categoryList = []
         items={}
         console.log("ding",foodItems.val())
@@ -388,8 +388,8 @@ export default class Orderitems extends React.Component{
             })
           })
 
-          firebase.database().ref(`restaurants/DLx2JOjCFVfTaQhShfbj3ZLmbOI3/categories`).set(categories)
-          firebase.database().ref(`restaurants/DLx2JOjCFVfTaQhShfbj3ZLmbOI3/foodItems`).set(foodItems)
+          firebase.database().ref(`restaurants/${this.props.navigation.getParam('restId')}/categories`).set(categories)
+          firebase.database().ref(`restaurants/${this.props.navigation.getParam('restId')}/foodItems`).set(foodItems)
     
   }
 
