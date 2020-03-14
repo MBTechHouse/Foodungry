@@ -25,8 +25,8 @@ export default class Orderitems extends React.Component{
 
   async fetchItemsFromDB(restId) {
     console.log(restId)
-    categoryList = []
-    items = {}
+    let categoryList = []
+    let items = {}
     await firebase.database().ref(`restaurants/${restId}/categories`).on('value',(categories=>{
       firebase.database().ref(`restaurants/${restId}/foodItems`).on('value',(foodItems=>{
 
