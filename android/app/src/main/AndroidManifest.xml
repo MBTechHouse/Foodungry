@@ -1,8 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.foodungry">
+  package="com.foodungry"
+  xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-sdk tools:overrideLibrary="com.razorpay"/>
+    
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
