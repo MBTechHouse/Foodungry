@@ -206,7 +206,34 @@ export default class ViewCart extends React.Component{
     });
   }
 
-  requestPayment() {
+  capturePayment(orderId) {
+    let t = Date.now()
+    let options = {
+      description: 'Credits towards consultation',
+      image: 'https://i.imgur.com/3g7nmJC.png',
+      currency: 'INR',
+      key: 'rzp_test_LrlEZ9KyFeDU92',
+      amount: '250',
+      name: 'Foodungry',
+      order_id: orderId,//Replace this with an order_id created using Orders API. Learn more at https://razorpay.com/docs/api/orders.
+      prefill: {
+        email: 'gaurav.kumar@example.com',
+        contact: '9191919191',
+        name: 'Gaurav Kumar'
+      },
+      theme: {color: '#53a20e'}
+    }
+    RazorpayCheckout.open(options).then((data) => {
+      // handle success
+      alert(`Success: ${data.razorpay_payment_id}`);
+    }).catch((error) => {
+      // handle failure
+      alert(`Error: ${error.code} | ${error.description}`);
+    });
+  }
+
+    
+  createOrder() {
     let orderApiUrl = "https://api.razorpay.com/v1/orders"
     let orderApiHeader = new Headers();
     orderApiHeader.append("content-type", "application/json");
@@ -229,33 +256,11 @@ export default class ViewCart extends React.Component{
 
     fetch(orderApiUrl, requestOptions)
       .then(response => response.text())
-      .then(result => console.log(result))
+      .then(result => {
+        console.log(result)
+        this.capturePayment(result.id)
+      })
       .catch(error => console.log('error', error));
-
-
-    // let t = Date.now()
-    // let options = {
-    //   description: 'Credits towards consultation',
-    //   image: 'https://i.imgur.com/3g7nmJC.png',
-    //   currency: 'INR',
-    //   key: 'rzp_test_LrlEZ9KyFeDU92',
-    //   amount: '250',
-    //   name: 'Foodungry',
-    //   order_id: `order_DslnoIgkIDL8Zt`,//Replace this with an order_id created using Orders API. Learn more at https://razorpay.com/docs/api/orders.
-    //   prefill: {
-    //     email: 'gaurav.kumar@example.com',
-    //     contact: '9191919191',
-    //     name: 'Gaurav Kumar'
-    //   },
-    //   theme: {color: '#53a20e'}
-    // }
-    // RazorpayCheckout.open(options).then((data) => {
-    //   // handle success
-    //   alert(`Success: ${data.razorpay_payment_id}`);
-    // }).catch((error) => {
-    //   // handle failure
-    //   alert(`Error: ${error.code} | ${error.description}`);
-    // });
   }
 
   formTime(time) {
@@ -289,7 +294,7 @@ export default class ViewCart extends React.Component{
                                 flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
                         onPress={() => 
                           {
-                            this.requestPayment();
+                            this.createOrder();
                           }
                         }
               >
