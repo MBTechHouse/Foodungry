@@ -29,7 +29,7 @@ export default class Orderitems extends React.Component{
     let items = {}
     await firebase.database().ref(`restaurants/${restId}/categories`).on('value',(categories=>{
       firebase.database().ref(`restaurants/${restId}/foodItems`).on('value',(foodItems=>{
-
+        firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/cartScreen').on('value',(cartScreen=>{
     categoryList = []
     items = {}
         if(categories && categories.val() && categories!==null && categories.val()!==null ) {
@@ -48,7 +48,11 @@ export default class Orderitems extends React.Component{
       })
     }
     }
+    if(cartScreen.val() && cartScreen.val().restId == this.props.navigation.state.params.restId)
+      this.setState({cart:cartScreen.val().cart, totalPrice: cartScreen.val().totalPrice, totalItems: cartScreen.val().totalItems, categoryList:categoryList, currentCategorySelected:categoryList.length>0?categoryList[0].categoryId:null, items:items})
+      else
       this.setState({categoryList:categoryList, currentCategorySelected:categoryList.length>0?categoryList[0].categoryId:null, items:items})
+        }))
       }))
     }))
   }
@@ -168,6 +172,16 @@ export default class Orderitems extends React.Component{
     return items
   }
 
+  cartTabPress() {
+    firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/cartScreen').update({
+      restId: this.props.navigation.state.params.restId,
+      cart: this.state.cart,
+      totalPrice: this.state.totalPrice,
+      totalItems: this.state.totalItems
+    })
+    this.props.navigation.navigate('ViewCart', {ordermode:this.props.navigation.getParam('ordermode')})
+  }
+
   renderCartTab()
   {
     if(this.state.totalItems > 0)
@@ -175,7 +189,7 @@ export default class Orderitems extends React.Component{
       return (
         <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
                                   flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
-                          onPress={()=>{this.props.navigation.navigate('ViewCart', {cart: this.state.cart, totalPrice: this.state.totalPrice, totalItems: this.state.totalItems, ordermode:this.props.navigation.getParam('ordermode')})}}
+                          onPress={()=>this.cartTabPress()}
         >
               <Layout style={{width:'70%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
                 <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems} Items</Text>

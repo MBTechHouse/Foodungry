@@ -70,7 +70,7 @@ handlePress(evt, restId){
             </View>
 
             <Layout style={{width:'85%', height:90, borderRadius:20, elevation: 5, padding: 5, marginLeft: '15%' }} >
-              <Layout style={{ marginLeft: '17%' }}>
+              <Layout style={{ marginLeft: '17%', backgroundColor: 'transperent' }}>
                 <Text style={{fontWeight:'bold', fontSize:15, width:'100%', fontFamily: 'serif' }}>{rest.name}</Text>
                 <Text style={{fontSize:10, color:'#757575', width:'100%', marginTop: '3%'}}>{rest.type}</Text>
                 <Text style={{fontSize:10, color:'#757575'}}>{rest.cuisine}</Text>
@@ -117,9 +117,6 @@ handlePress(evt, restId){
 
   render()
   {
-    console.log(this.panResponder.panHandlers)
-    console.log("LocX",this.state.locationX)
-    console.log("LocY",this.state.locationY)
     return (
       <View style={{width:'100%', height:'100%'}}>
         {this.renderItems()}

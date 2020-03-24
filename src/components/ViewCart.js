@@ -30,18 +30,17 @@ export default class ViewCart extends React.Component{
   componentDidMount()
   {
     firebase.database().ref('users/'+firebase.auth().currentUser.uid)
-      .on('value', snapshot => this.setState({ user: snapshot.val() }, () => {
+      .on('value', snapshot => this.setState({ 
+        user: snapshot.val(),
+        cart: snapshot.val().cartScreen?snapshot.val().cartScreen.cart:{},
+        totalPrice: snapshot.val().cartScreen?snapshot.val().cartScreen.totalPrice:0,
+        totalItems: snapshot.val().cartScreen?snapshot.val().cartScreen.totalItems:0,
+        restId: snapshot.val().cartScreen?snapshot.val().cartScreen.restId:'',
+      }, () => {
         if(this.state.user.pendingOrd == 1)
           this.updatePage()
       }
     ));
-
-    this.setState({
-      cart: this.props.navigation.getParam('cart'),
-      totalPrice: this.props.navigation.getParam('totalPrice'),
-      totalItems: this.props.navigation.getParam('totalItems'),
-      restId: '1RNk7guJOkSSAB3fxfgO21HJnvp1'
-    });
   }
 
   updatePage() {
@@ -164,23 +163,13 @@ export default class ViewCart extends React.Component{
     return <Text style={{ fontSize: 18, alignItems: 'center', color: '#aaa', fontFamily: 'serif', marginLeft: '28%', marginTop: '10%' }}>CART IS EMPTY</Text>
   }
 
-  uploadOrder() {
+  uploadOrder(pId, t) {
     let at = this.state.arrTime
-    if(at == '-:-') {
-      Alert.alert("Oops...", "Please specify your Arrival Time.")
-      return
-    }
-
-    let t = Date.now()
-    if(at < Date.now()) {
-      Alert.alert("Oops...", "Select a valid arrival time.")
-      this.setState({ arrTime: '' })
-      return
-    }
     this.setState({ ordTime: t })
     let oid = "order_" + at
     let ord = {
       restId: this.state.restId,
+      paymentId: pId,
       email: this.state.user.email,
       phone: this.state.user.phone,
       ordTime: t,
@@ -206,34 +195,50 @@ export default class ViewCart extends React.Component{
     });
   }
 
-  capturePayment(orderId) {
-    let t = Date.now()
+  capturePayment(orderId, t) {
     let options = {
       description: 'Credits towards consultation',
-      image: 'https://i.imgur.com/3g7nmJC.png',
+      //image: 'https://i.imgur.com/3g7nmJC.png',
       currency: 'INR',
       key: 'rzp_test_LrlEZ9KyFeDU92',
-      amount: '250',
-      name: 'Foodungry',
-      order_id: orderId,//Replace this with an order_id created using Orders API. Learn more at https://razorpay.com/docs/api/orders.
+      amount: this.state.totalPrice*100,
+      //name: 'Foodungry',
+      order_id: orderId,
       prefill: {
-        email: 'gaurav.kumar@example.com',
-        contact: '9191919191',
-        name: 'Gaurav Kumar'
+        email: this.state.user.email,
+        contact: this.state.user.phone,
+        name: this.state.user.name
       },
-      theme: {color: '#53a20e'}
+      //theme: {color: '#53a20e'}
     }
     RazorpayCheckout.open(options).then((data) => {
       // handle success
-      alert(`Success: ${data.razorpay_payment_id}`);
+      console.log(data)
+      this.uploadOrder(data.razorpay_payment_id, t)
+      //alert(`Success: ${data.razorpay_payment_id}`);
     }).catch((error) => {
       // handle failure
-      alert(`Error: ${error.code} | ${error.description}`);
+      console.log(error)
+      alert("Payment Cancelled / Failed")
+      //alert(`Error: ${error.code} | ${error.description}`);
     });
   }
 
     
   createOrder() {
+    let at = this.state.arrTime
+    if(at == '-:-') {
+      Alert.alert("Oops...", "Please specify your Arrival Time.")
+      return
+    }
+
+    let t = Date.now()
+    if(at < t) {
+      Alert.alert("Oops...", "Select a valid arrival time.")
+      this.setState({ arrTime: '' })
+      return
+    }
+
     let orderApiUrl = "https://api.razorpay.com/v1/orders"
     let orderApiHeader = new Headers();
     orderApiHeader.append("content-type", "application/json");
@@ -245,7 +250,7 @@ export default class ViewCart extends React.Component{
     //Replace with the above code after server is integrated
     orderApiHeader.append("Authorization", "Basic cnpwX3Rlc3RfTHJsRVo5S3lGZURVOTI6UjFCbnJ6WXNwdVdlSnBob0Q1NWp1Smll");
     let orderApiOptions = 
-      JSON.stringify({"amount":25000,"currency":"INR","receipt":"rcptid_11","payment_capture":1});
+      JSON.stringify({"amount":this.state.totalPrice*100,"currency":"INR","receipt":"rcptid_11","payment_capture":1});
 
     let requestOptions = {
       method: 'POST',
@@ -258,7 +263,7 @@ export default class ViewCart extends React.Component{
       .then(response => response.text())
       .then(result => {
         console.log(result)
-        this.capturePayment(result.id)
+        this.capturePayment(result.id, t)
       })
       .catch(error => console.log('error', error));
   }
@@ -292,11 +297,7 @@ export default class ViewCart extends React.Component{
     return (
       <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
                                 flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
-                        onPress={() => 
-                          {
-                            this.createOrder();
-                          }
-                        }
+                        onPress={() => this.createOrder()}
               >
             <Layout style={{width:'67%', backgroundColor: 'transparent', justifyContent: 'center', paddingLeft:'5%'}}>
               <Text style={{color:'#fff', fontSize:16}}>{this.state.totalItems?this.state.totalItems:'0'} Items</Text>
