@@ -64,7 +64,6 @@ export default class Login extends Component {
           const credential = firebase.auth.GoogleAuthProvider.credential(null, res.accessToken)
           const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
           let userDet = firebaseUserCredential.user;
-          //console.log(JSON.stringify(userDet));
           firebase.database().ref().child('users').child(userDet.uid).set({
             email: userDet.email? userDet.email: '',
             name: userDet.displayName? userDet.displayName: '',
@@ -91,7 +90,6 @@ export default class Login extends Component {
       if (result.isCancelled) {
         return;
       }
-      //console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
       this.setState({ loading: true });
       const data = await AccessToken.getCurrentAccessToken();
       if (!data) {
@@ -100,7 +98,6 @@ export default class Login extends Component {
       const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
       const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
       let userDet = firebaseUserCredential.user;
-      //console.log(JSON.stringify(userDet))
       firebase.database().ref().child('users').child(userDet.uid).set({
         email: userDet.email? userDet.email: '',
         name: userDet.displayName? userDet.displayName: '',

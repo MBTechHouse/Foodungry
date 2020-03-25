@@ -233,7 +233,6 @@ class SettingsScreen extends Component {
           <ListItem
             title="Send FeedBack"
             onPress={() => {
-              console.log("Navigate")
               this.props.navigation.navigate('CustomerFeeback')}}
             containerStyle={styles.listItemContainer}
             leftIcon={

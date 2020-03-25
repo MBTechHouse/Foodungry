@@ -55,6 +55,13 @@ export default class ViewCart extends React.Component{
     });
   }
 
+  updateCartInfo(cart) {
+    firebase
+      .database()
+      .ref('users/' + firebase.auth().currentUser.uid + '/cartScreen/cart')
+      .set(cart);
+  }
+
   renderCartButton(key,item)
   {
     if(item.quantity == 0) {
@@ -90,13 +97,13 @@ export default class ViewCart extends React.Component{
           totalItems = totalItems - 1
           totalPrice = totalPrice - item.actualPrice
 
-          if(cart[key].quantity==0)
-          {
+          if(cart[key].quantity==0) {
             delete cart[key]
             this.setState({cart:cart, totalPrice:totalPrice, totalItems:totalItems})
-          }
-          else
+            this.updateCartInfo(cart)
+          } else {
             this.setState({cart:cart, totalPrice:totalPrice, totalItems:totalItems})
+            this.updateCartInfo(cart)}
          }}>
         <Text style={{color:'red', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>-</Text>
         </TouchableOpacity>
@@ -112,6 +119,7 @@ export default class ViewCart extends React.Component{
           totalItems = totalItems + 1
           totalPrice = totalPrice + item.actualPrice
         this.setState({cart:cart, totalPrice:totalPrice, totalItems:totalItems})
+        this.updateCartInfo(cart)
         }}>
         <Text style={{color:'#7cb342', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>+</Text>
         </TouchableOpacity>
@@ -213,7 +221,6 @@ export default class ViewCart extends React.Component{
     }
     RazorpayCheckout.open(options).then((data) => {
       // handle success
-      console.log(data)
       this.uploadOrder(data.razorpay_payment_id, t)
       //alert(`Success: ${data.razorpay_payment_id}`);
     }).catch((error) => {
@@ -262,7 +269,6 @@ export default class ViewCart extends React.Component{
     fetch(orderApiUrl, requestOptions)
       .then(response => response.text())
       .then(result => {
-        console.log(result)
         this.capturePayment(result.id, t)
       })
       .catch(error => console.log('error', error));

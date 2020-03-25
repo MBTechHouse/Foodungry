@@ -228,7 +228,6 @@ export default class Orders extends React.Component {
         let itemKeys = this.state.appData.categories[
           this.state.cuurentCategoryId
         ]['itemIds'].split(',');
-        console.log('itemKeys', itemKeys);
         itemKeys.forEach(element => {
           cats.push(this.state.appData.collections[element]);
         });
@@ -556,7 +555,6 @@ export default class Orders extends React.Component {
       inputRange: [0, 150],
       outputRange: ['rgb(255,255,255)', 'rgb(85,194,255)'],
     });
-    console.log(this.props.navigation.getParam('ordermode'));
     return (
         <ParallaxScrollView
           style={styles1.container} contentContainerStyle={{flexGrow:1}}
