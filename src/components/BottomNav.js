@@ -20,19 +20,7 @@ import Signup from './Signup.js'
 import CustomerFeeback from './CustomerFeedback'
 
 import AddButton from '../components/BottomNavHelper/AddButton'
-
-const OrderNavigator = createStackNavigator(
-  {
-    Orders: Orders,
-    OrderItemList: OrderItems,
-    ViewCart: ViewCart,
-    CustomerFeeback: CustomerFeeback
-  },
-  {
-    initialRouteName: 'Orders',
-    headerMode: 'none'
-  }
-);
+import { create } from 'react-test-renderer';
 
 
 
@@ -41,7 +29,6 @@ const BottomNavigator = createBottomTabNavigator({
     screen: Victor,
     navigationOptions: ({navigation}) =>( {
       tabBarIcon:({ focused, horizontal, tintColor }) => {
-        console.log(navigation.state.index, tintColor)
         if (navigation.state.routeName === "Victor") {
           return <Icon name='people-outline' width={25} height={25} fill={tintColor} />
         }
@@ -62,7 +49,7 @@ const BottomNavigator = createBottomTabNavigator({
     })
   },
   Orders:{
-    screen: OrderNavigator,
+    screen: Orders,
     navigationOptions: {
       tabBarIcon: <AddButton />
     }
@@ -82,7 +69,6 @@ const BottomNavigator = createBottomTabNavigator({
     screen: Profile,
     navigationOptions: ({navigation}) =>({
       tabBarIcon:({ focused, horizontal, tintColor }) => {
-        console.log(navigation.state.index)
         if (navigation.state.routeName === "Profile") {
           return <Icon name='person' width={25} height={25} fill={tintColor} />
         }
@@ -97,11 +83,24 @@ const BottomNavigator = createBottomTabNavigator({
     inactiveTintColor: '#272727'},
 });
 
+const OrderNavigator = createStackNavigator(
+  {
+    BottomNav: BottomNavigator,
+    OrderItemList: OrderItems,
+    ViewCart: ViewCart,
+    CustomerFeeback: CustomerFeeback
+  },
+  {
+    initialRouteName: 'BottomNav',
+    headerMode: 'none'
+  }
+);
+
+
 const MainNav = createStackNavigator({
   Login: Login,
   Signup: Signup,
-  HomeScreen: HomeScreen,
-  MainFlow: BottomNavigator},
+  MainFlow: OrderNavigator},
   {
     initialRouteName: 'Login',
     header: null,

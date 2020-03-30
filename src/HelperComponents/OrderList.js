@@ -23,9 +23,7 @@ export default class OrderList extends React.Component {
       onMoveShouldSetPanResponderCapture: (event, gestureState) => false,
       onPanResponderGrant: (event, gestureState) => false,
       onPanResponderMove: (event, gestureState) => false,
-      onPanResponderRelease: (event, gestureState) => {
-        console.log("Locs",event.nativeEvent.locationX.toFixed(2),"  ",event.nativeEvent.locationY.toFixed(2))
-        
+      onPanResponderRelease: (event, gestureState) => { 
           this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode')})
         
       },
@@ -50,11 +48,9 @@ export default class OrderList extends React.Component {
     if(4.2 <= r && r <= 5.0) return '#076B05'
   }
   onLayout(event){
-    console.log("Clciked",event.nativeEvent.layout)
   }
 
 handlePress(evt, restId){
-  console.log(`x coord = ${evt.nativeEvent.locationX.toFixed(2)} y coord = ${evt.nativeEvent.locationY.toFixed(2)}`);
   this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode'), restId: restId})
 }
 
