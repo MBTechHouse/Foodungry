@@ -52,12 +52,12 @@ export default class Signup extends Component {
               <Text style={{fontSize: 18, textAlign: 'left', width: '100%', color: '#888'}}>Let's get you started </Text>
             </View>
             <Item>
-                <Icon active name='ios-mail' style={{color: '#01bff1'}} />
-                <Input placeholder='Email' onChangeText={(text) => this.setState({email: text})} keyboardType="email-address" placeholderTextColor="#888" />
-            </Item>
-            <Item>
                 <Icon active name='ios-person' style={{color: '#01bff1'}} />
                 <Input placeholder='Name' onChangeText={(text) => this.setState({name: text})} placeholderTextColor="#888" />
+            </Item>
+            <Item>
+                <Icon active name='ios-mail' style={{color: '#01bff1'}} />
+                <Input placeholder='Email' onChangeText={(text) => this.setState({email: text})} keyboardType="email-address" placeholderTextColor="#888" />
             </Item>
             <Item>
                 <Icon active name='ios-phone-portrait' style={{color: '#01bff1'}} />
@@ -69,7 +69,7 @@ export default class Signup extends Component {
             </Item>
             <Item>
                 <Icon active name='ios-key' style={{color: '#01bff1'}} />
-                <Input placeholder='Repeat your password' onChangeText={(text) => this.setState({rePassword: text})} secureTextEntry={true} placeholderTextColor="#888" />
+                <Input placeholder='Confirm Password' onChangeText={(text) => this.setState({rePassword: text})} secureTextEntry={true} placeholderTextColor="#888" />
             </Item>
             {this.state.hasError?<Text style={{color: "#c0392b", textAlign: 'center', marginTop: 10}}>{this.state.errorText}</Text>:null}
             {this.loadingSpinner()}

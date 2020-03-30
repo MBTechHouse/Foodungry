@@ -152,14 +152,13 @@ export default class Login extends Component {
     {
       return(
         <Container style={{backgroundColor: '#fdfdfd'}}>
-          <View style={{ position: 'absolute', right: 0, width: w/1.6, height: 0, backgroundColor: 'transparent', borderLeftWidth: w/2.2, borderBottomWidth: h/2.15, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: '#D2F3FC' }} />
           <View style={{ position: 'absolute', right: 0, width: w/1.6, height: 0, backgroundColor: 'transparent', borderLeftWidth: w/2, borderBottomWidth: h, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: '#01bff1' }} />
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', paddingLeft: 50, paddingRight: 50}}>
-          <View style={{ position: 'absolute', width: '50%', height: '20%', top: '5%', left: '20%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} >
+          <View style={{ position: 'absolute', width: '50%', height: '20%', top: '5%', left: '45%', justifyContent: 'center', alignItems: 'center' }} >
             <Image source={require('../resources/Images/logo.png')} style={{ resizeMode: 'cover', width: '60%', height: '50%' }} />
             <View>
-              <Text style={{ fontSize: 12 }}>Welcome To</Text>
-              <Text style={{ fontSize: 16, fontWeight: 'bold', fontFamily: 'serif' }}> FOODUNGRY</Text>
+              <Text style={{ fontSize: 12, marginTop: '5%', textAlign: 'center' }}>Welcome To</Text>
+              <Text style={{ fontSize: 16, fontWeight: 'bold', fontFamily: 'serif' }}>FOODUNGRY</Text>
             </View>
           </View>
           <View style={{ marginTop: h/2.6, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
