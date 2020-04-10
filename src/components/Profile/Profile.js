@@ -3,6 +3,8 @@ import { ScrollView, Switch, StyleSheet, Text, View } from 'react-native'
 import { Avatar, ListItem } from 'react-native-elements'
 import PropTypes from 'prop-types'
 
+import firebase from 'firebase'
+
 import BaseIcon from './Icon'
 import Chevron from './Chevron'
 import InfoText from './InfoText'
@@ -44,6 +46,8 @@ class SettingsScreen extends Component {
 
   state = {
     pushNotifications: true,
+    name: '',
+    email:''
   }
 
   onPressOptions = () => {
@@ -55,6 +59,13 @@ class SettingsScreen extends Component {
       pushNotifications: !state.pushNotifications,
     }))
   }
+
+  componentDidMount() {
+    this.setState({
+      name: firebase.auth().currentUser.displayName,
+      email: firebase.auth().currentUser.email
+  })
+}
 
   render() {
     const { avatar, name, emails: [firstEmail] } = this.props
@@ -71,44 +82,22 @@ class SettingsScreen extends Component {
             />
           </View>
           <View>
-            <Text style={{ fontSize: 16 }}>{name}</Text>
+            <Text style={{ fontSize: 16 }}>{this.state.name}</Text>
             <Text
               style={{
                 color: 'gray',
                 fontSize: 16,
               }}
             >
-              {firstEmail.email}
+              {this.state.email}
             </Text>
           </View>
         </View>
         <InfoText text="Account" />
         <View>
           <ListItem
-            hideChevron
-            title="Push Notifications"
-            containerStyle={styles.listItemContainer}
-            rightElement={
-              <Switch
-                onValueChange={this.onChangePushNotifications}
-                value={this.state.pushNotifications}
-              />
-            }
-            leftIcon={
-              <BaseIcon
-                containerStyle={{
-                  backgroundColor: '#FFADF2',
-                }}
-                icon={{
-                  type: 'material',
-                  name: 'notifications',
-                }}
-              />
-            }
-          />
-          <ListItem
             // chevron
-            title="Ongoing Orders"
+            title="Edit Profile"
             rightTitle=""
             rightTitleStyle={{ fontSize: 15 }}
             onPress={() => this.onPressOptions()}
@@ -124,112 +113,9 @@ class SettingsScreen extends Component {
             }
             rightIcon={<Chevron />}
           />
-          <ListItem
-            title="Past Orders"
-            rightTitle=""
-            rightTitleStyle={{ fontSize: 15 }}
-            onPress={() => this.onPressOptions()}
-            containerStyle={styles.listItemContainer}
-            leftIcon={
-              <BaseIcon
-                containerStyle={{ backgroundColor: '#57DCE7' }}
-                icon={{
-                  type: 'material',
-                  name: 'place',
-                }}
-              />
-            }
-            rightIcon={<Chevron />}
-          />
-          <ListItem
-            title="Bookmarks"
-            rightTitle=""
-            rightTitleStyle={{ fontSize: 15 }}
-            onPress={() => this.onPressOptions()}
-            containerStyle={styles.listItemContainer}
-            leftIcon={
-              <BaseIcon
-                containerStyle={{ backgroundColor: '#FEA8A1' }}
-                icon={{
-                  type: 'material',
-                  name: 'language',
-                }}
-              />
-            }
-            rightIcon={<Chevron />}
-          />
         </View>
         <InfoText text="More" />
         <View>
-          <ListItem
-            title="About US"
-            onPress={() => this.onPressOptions()}
-            containerStyle={styles.listItemContainer}
-            leftIcon={
-              <BaseIcon
-                containerStyle={{ backgroundColor: '#A4C8F0' }}
-                icon={{
-                  type: 'ionicon',
-                  name: 'md-information-circle',
-                }}
-              />
-            }
-            rightIcon={<Chevron />}
-          />
-          <ListItem
-            title="Terms and Policies"
-            onPress={() => this.onPressOptions()}
-            containerStyle={styles.listItemContainer}
-            leftIcon={
-              <BaseIcon
-                containerStyle={{ backgroundColor: '#C6C7C6' }}
-                icon={{
-                  type: 'entypo',
-                  name: 'light-bulb',
-                }}
-              />
-            }
-            rightIcon={<Chevron />}
-          />
-          <ListItem
-            title="Share our App"
-            onPress={() => this.onPressOptions()}
-            containerStyle={styles.listItemContainer}
-            leftIcon={
-              <BaseIcon
-                containerStyle={{
-                  backgroundColor: '#C47EFF',
-                }}
-                icon={{
-                  type: 'entypo',
-                  name: 'share',
-                }}
-              />
-            }
-            rightIcon={<Chevron />}
-          />
-          <ListItem
-            title="Rate Us"
-            onPress={() => this.onPressOptions()}
-            containerStyle={styles.listItemContainer}
-            badge={{
-              value: 5,
-              textStyle: { color: 'white' },
-              containerStyle: { backgroundColor: 'gray', marginTop: 0 },
-            }}
-            leftIcon={
-              <BaseIcon
-                containerStyle={{
-                  backgroundColor: '#FECE44',
-                }}
-                icon={{
-                  type: 'entypo',
-                  name: 'star',
-                }}
-              />
-            }
-            rightIcon={<Chevron />}
-          />
           <ListItem
             title="Send FeedBack"
             onPress={() => {

@@ -21,16 +21,17 @@ import CustomerFeeback from './CustomerFeedback'
 
 import AddButton from '../components/BottomNavHelper/AddButton'
 import { create } from 'react-test-renderer';
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 
 const BottomNavigator = createBottomTabNavigator({
-  Victor: {
-    screen: Victor,
+  Orders: {
+    screen: Orders,
     navigationOptions: ({navigation}) =>( {
       tabBarIcon:({ focused, horizontal, tintColor }) => {
-        if (navigation.state.routeName === "Victor") {
-          return <Icon name='people-outline' width={25} height={25} fill={tintColor} />
+        if (navigation.state.routeName === "Orders") {
+          return <MaterialCommunityIcons name='food' size={25} color={tintColor} />
         }
 
     }
@@ -42,14 +43,14 @@ const BottomNavigator = createBottomTabNavigator({
     navigationOptions: ({navigation}) =>({
       tabBarIcon:({ focused, horizontal, tintColor }) => {
         if (navigation.state.routeName === "Search") {
-          return <Icon name='search' width={25} height={25} fill={tintColor} />
+          return <MaterialIcons name='schedule' size={25} color={tintColor} />
         }
     }
 
     })
   },
-  Orders:{
-    screen: Orders,
+  Home:{
+    screen: ()=>{},
     navigationOptions: {
       tabBarIcon: <AddButton />
     }

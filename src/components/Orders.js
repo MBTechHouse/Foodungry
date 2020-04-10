@@ -21,6 +21,7 @@ import styles, {colors} from '../components/carousel/index.style';
 import {sliderWidth, itemWidth} from '../components/carousel/SliderEntry.style';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import firebase from 'firebase';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export default class Orders extends React.Component {
   static navigationOptions = {
@@ -294,11 +295,11 @@ export default class Orders extends React.Component {
   getForeground() {
     return (
       <View>
-        <View style={{width: '100%', height: this.h * 0.42}}>
+        <View style={{width: '100%', height: this.h * 0.40}}>
           <Layout style={styles1.locationHeader}>
             <Layout
               style={{
-                width: '78%',
+                width: '100%',
                 backgroundColor: 'transparent',
                 justifyContent: 'space-around',
                 height: this.h * 0.11,
@@ -326,10 +327,17 @@ export default class Orders extends React.Component {
                   />
                 </TouchableOpacity>
               </Layout>
+
+              <Layout style={{
+                width:'100%',
+                height:this.h * 0.06,
+                backgroundColor: 'transparent',
+                flexDirection:'row'}}>
+
               <Layout
                 style={{
                   flexDirection: 'row',
-                  width: '95%',
+                  width: '80%',
                   height: this.h * 0.06,
                   backgroundColor: 'transparent',
                 }}>
@@ -368,38 +376,53 @@ export default class Orders extends React.Component {
                     placeholderTextColor={'#797d7f'}
                   />
                 </Layout>
-              </Layout>
-            </Layout>
 
-            <Layout
+
+                <Layout
               style={{
-                width: '20%',
-                height: this.h * 0.11,
+                width: '12%',
+                height: this.h * 0.06,
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: 'transparent',
               }}>
-              <BoxShadow
-                setting={{
-                  width: this.w * 0.18,
-                  height: this.w * 0.18,
-                  color: '#000',
-                  border: 4,
-                  radius: (this.w * 0.18) / 2,
-                  opacity: 0.18,
-                  x: 0,
-                  y: 2,
-                  style: {marginVertical: 5},
-                }}>
-                <Image
-                  source={require('../resources/Images/Bhargav1.jpg')}
-                  style={{
-                    width: this.w * 0.18,
-                    height: this.w * 0.18,
-                    borderRadius: (this.w * 0.18) / 2,
-                  }}
-                />
-              </BoxShadow>
+              <TouchableOpacity style={{
+                padding:'5%',
+                borderRadius:10,
+                backgroundColor:'#fff'
+              }}>
+                <MaterialCommunityIcons
+                  name="sort"
+                  size={25}
+                  color="#55C2FF"
+                  />
+              </TouchableOpacity>
+            </Layout>
+
+            <Layout
+              style={{
+                width: '12%',
+                height: this.h * 0.06,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'transparent',
+              }}>
+              <TouchableOpacity style={{
+                padding:'5%',
+                borderRadius:10,
+                backgroundColor:'#fff'
+              }}>
+                <MaterialCommunityIcons
+                  name="filter"
+                  size={25}
+                  color="#55C2FF"
+                  />
+              </TouchableOpacity>
+            </Layout>
+
+
+            </Layout>
+              </Layout>
             </Layout>
           </Layout>
 
@@ -435,10 +458,24 @@ export default class Orders extends React.Component {
             />
           </View>
         </View>
-
+        <View
+          style={{width: '100%', height: this.h * 0.23, top: this.h * 0.014}}>
+          <Text style={{fontSize: 18, fontWeight: 'bold', paddingLeft: '5%'}}>
+            Categories
+          </Text>
+          <View style={{width: '100%', height: '100%', marginTop: '3%'}}>
+            <ScrollView
+              style={{height: '100%'}}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              {this.getCategories()}
+            </ScrollView>
+          </View>
+        </View>
         <View
           style={{
             width: '70%',
+            top:this.h*(0.018),
             height: this.h * 0.065,
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -498,20 +535,6 @@ export default class Orders extends React.Component {
               Take away
             </Text>
           </TouchableOpacity>
-        </View>
-        <View
-          style={{width: '100%', height: this.h * 0.23, top: this.h * 0.019}}>
-          <Text style={{fontSize: 18, fontWeight: 'bold', paddingLeft: '5%'}}>
-            Categories
-          </Text>
-          <View style={{width: '100%', height: '100%', marginTop: '3%'}}>
-            <ScrollView
-              style={{height: '100%'}}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}>
-              {this.getCategories()}
-            </ScrollView>
-          </View>
         </View>
       </View>
     );
