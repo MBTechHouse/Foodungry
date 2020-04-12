@@ -34,6 +34,10 @@ export default class Orders extends React.Component {
     swipe: false,
     preview: false,
     cuurentCategoryId: null,
+    searchRestaurants:'',
+    restaurantSearchResults:[],
+    onSearch:false,
+    editing:false
   };
 
   componentWillMount() {
@@ -77,12 +81,13 @@ export default class Orders extends React.Component {
     return <SliderEntry data={item} even={(index + 1) % 2 === 0} />;
   }
 
-  getCategories() {
+  getCategories(textOnly) {
     let items = [];
     let cats = [];
 
     if (this.state.appData.categories) cats = this.state.appData.categories;
     cats.map(cat => {
+      if(!textOnly)
       items.push(
         <BoxShadow
           setting={{
@@ -152,8 +157,50 @@ export default class Orders extends React.Component {
               {cat.name}
             </Text>
           </TouchableOpacity>
-        </BoxShadow>,
-      );
+        </BoxShadow>
+      ); else {
+        items.push(
+            <TouchableOpacity
+              style={{
+                borderRadius: this.w * 0.06,
+                height: this.h * (0.06),
+                width:this.w * (0.3),
+                backgroundColor: '#fff',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+                borderWidth:1,
+                borderColor:'#d3d3d3',
+                elevation:6,
+                marginLeft:this.w*(0.03)
+              }}
+              onPress={() => {
+                if (cat.fromNode === 'collections') {
+                  if (this.state.cuurentCategoryId !== cat.categoryId)
+                    this.setState({
+                      preview: true,
+                      cuurentCategoryId: cat.categoryId,
+                    });
+                  else {
+                    this.setState({
+                      preview: false,
+                      cuurentCategoryId: null,
+                    });
+                  }
+                } else {
+                  this.setState({
+                    list: cat.itemIds.split(','),
+                    listName: cat.fromNode,
+                    preview: false,
+                    cuurentCategoryId: null,
+                  });
+                }
+              }}>
+              <Text style={{fontSize: 14, textAlign: 'center', width:'100%'}}>
+                {cat.name}
+              </Text>
+            </TouchableOpacity>
+        );
+      }
     });
 
     return items;
@@ -305,26 +352,26 @@ export default class Orders extends React.Component {
                 height: this.h * 0.11,
               }}>
               <Layout
-                style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
+                style={{flexDirection: 'row', backgroundColor: 'transparent', marginLeft:'2%'}}>
                 <TouchableOpacity
                   style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Icon
+                    name="edit-outline"
+                    width={this.w * 0.06}
+                    height={this.w * 0.06}
+                    fill="#272727"
+                  />
                   <Text
                     numberOfLines={1}
                     style={{
                       fontSize: 20,
-                      color: '#fdfdfd',
+                      color: '#272727',
                       fontWeight: 'bold',
                       marginRight: '2%',
                       marginLeft: '4%',
                     }}>
                     Home Location
                   </Text>
-                  <Icon
-                    name="edit-outline"
-                    width={this.w * 0.06}
-                    height={this.w * 0.06}
-                    fill="#fdfdfd"
-                  />
                 </TouchableOpacity>
               </Layout>
 
@@ -337,7 +384,7 @@ export default class Orders extends React.Component {
               <Layout
                 style={{
                   flexDirection: 'row',
-                  width: '80%',
+                  width: '87%',
                   height: this.h * 0.06,
                   backgroundColor: 'transparent',
                 }}>
@@ -349,6 +396,13 @@ export default class Orders extends React.Component {
                     borderBottomLeftRadius: 20,
                     alignItems: 'center',
                     justifyContent: 'center',
+                    backgroundColor:'#fff',
+                    borderTopColor:'#d3d3d3',
+                    borderTopWidth:1,
+                    borderBottomColor:'#d3d3d3',
+                    borderBottomWidth:1,
+                    borderLeftColor:'#d3d3d3',
+                    borderLeftWidth:1,
                   }}>
                   <Icon
                     name="search-outline"
@@ -357,47 +411,39 @@ export default class Orders extends React.Component {
                     fill="#797d7f"
                   />
                 </Layout>
-                <Layout
+                <View
                   style={{
                     width: '85%',
                     height: '100%',
                     borderTopRightRadius: 20,
                     borderBottomRightRadius: 20,
                     justifyContent: 'center',
+                    backgroundColor:'#fff',
+                    borderTopColor:'#d3d3d3',
+                    borderTopWidth:1,
+                    borderBottomColor:'#d3d3d3',
+                    borderBottomWidth:1,
+                    borderRightColor:'#d3d3d3',
+                    borderRightWidth:1,
                   }}>
                   <TextInput
                     style={{
                       fontSize: 18,
                       color: '#797d7f',
                       width: '100%',
-                      height: '150%',
+                      height: '100%',
                     }}
+                    value={this.state.searchRestaurants}
                     placeholder="Search restaurants"
                     placeholderTextColor={'#797d7f'}
+                    onChangeText={(text)=>this.setState({searchRestaurants:text})}
+                    onFocus={()=>{this.setState({onSearch:true})}}
                   />
-                </Layout>
+                </View>
 
-
-                <Layout
-              style={{
-                width: '12%',
-                height: this.h * 0.06,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'transparent',
-              }}>
-              <TouchableOpacity style={{
-                padding:'5%',
-                borderRadius:10,
-                backgroundColor:'#fff'
-              }}>
-                <MaterialCommunityIcons
-                  name="sort"
-                  size={25}
-                  color="#55C2FF"
-                  />
-              </TouchableOpacity>
             </Layout>
+
+
 
             <Layout
               style={{
@@ -421,7 +467,6 @@ export default class Orders extends React.Component {
             </Layout>
 
 
-            </Layout>
               </Layout>
             </Layout>
           </Layout>
@@ -431,7 +476,7 @@ export default class Orders extends React.Component {
               position: 'absolute',
               top: this.h * 0.095,
               elevation: 20,
-              paddingLeft: '10%',
+              paddingLeft: '2%',
             }}>
             <Carousel
               data={this.state.appData.banners}
@@ -461,22 +506,22 @@ export default class Orders extends React.Component {
         <View
           style={{width: '100%', height: this.h * 0.23, top: this.h * 0.014}}>
           <Text style={{fontSize: 18, fontWeight: 'bold', paddingLeft: '5%'}}>
-            Categories
+            Top Categories
           </Text>
           <View style={{width: '100%', height: '100%', marginTop: '3%'}}>
             <ScrollView
               style={{height: '100%'}}
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
-              {this.getCategories()}
+              {this.getCategories(false)}
             </ScrollView>
           </View>
         </View>
         <View
           style={{
             width: '70%',
-            top:this.h*(0.018),
-            height: this.h * 0.065,
+            top: this.h*(0.01),
+            height: this.h * 0.064,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignSelf: 'center',
@@ -564,26 +609,51 @@ export default class Orders extends React.Component {
           />
         </TouchableOpacity>
         <ScrollView
-          style={{height: this.h * 0.16, width: '100%'}}
+          style={{ width: '100%', marginTop:'3%', height: this.h * (0.07)}}
           horizontal={true}
-          showsHorizontalScrollIndicator={false}>
-          {this.getCategories()}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{paddingRight:100}}
+          >
+          {this.getCategories(true)}
         </ScrollView>
       </View>
     );
   }
 
+  async searchRestaurants(text) {
+    let restaurantResults = []
+    firebase.database().ref(`restaurants`).once('value', (restaurants)=> {
+      restaurantResults = []
+      Object.entries(restaurants.val()).map(([restId, restaurant]) => {
+        if(restaurant.foodItems!==undefined
+          && restaurant.foodItems!==null) {
+        Object.values(restaurant.foodItems).map(foodItem=>{
+            if(foodItem !== undefined
+              && foodItem.title!==undefined 
+              && foodItem.title.toLowerCase().includes(text.toLowerCase())) {
+              if(!restaurantResults.includes(restId))
+              restaurantResults.push(restId)
+            }
+          }) 
+        }
+      })
+      console.log(restaurantResults)
+      this.setState({restaurantSearchResults: restaurantResults})
+    })
+  }
+
   render() {
+    //console.log(this.state.listName, this.state.list, this.state.appData[this.state.listName])
     const interpolateColor = this.animatedValue.interpolate({
       inputRange: [0, 150],
       outputRange: ['rgb(255,255,255)', 'rgb(85,194,255)'],
     });
+    if(this.state.searchRestaurants=="")
     return (
         <ParallaxScrollView
           style={styles1.container} contentContainerStyle={{flexGrow:1}}
           backgroundColor={'white'}
-          parallaxHeaderHeight={this.h*0.715}
-          stickyHeaderHeight={this.h*0.2}
+          parallaxHeaderHeight={this.h*0.718}
           renderForeground={() => this.getForeground()}
           renderStickyHeader={() => this.stickyHeader()}
           fadeOutForeground={false}
@@ -616,6 +686,105 @@ export default class Orders extends React.Component {
         </View>
       </ParallaxScrollView>
     );
+    return (
+      <View style={{width:'100%', height:'100%',}}>
+          <View style={{width:'100%', alignItems:'center', marginTop:'5%'}}>
+          <Layout
+                style={{
+                  flexDirection: 'row',
+                  width: '87%',
+                  height: this.h * 0.06,
+                  backgroundColor: 'transparent',
+                }}>
+                <Layout
+                  style={{
+                    width: '15%',
+                    height: '100%',
+                    borderTopLeftRadius: 20,
+                    borderBottomLeftRadius: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor:'#fff',
+                    borderTopColor:'#d3d3d3',
+                    borderTopWidth:1,
+                    borderBottomColor:'#d3d3d3',
+                    borderBottomWidth:1,
+                    borderLeftColor:'#d3d3d3',
+                    borderLeftWidth:1,
+                  }}>
+                  <Icon
+                    name="search-outline"
+                    width={25}
+                    height={25}
+                    fill="#797d7f"
+                  />
+                </Layout>
+                <View
+                  style={{
+                    width: '85%',
+                    height: '100%',
+                    borderTopRightRadius: 20,
+                    borderBottomRightRadius: 20,
+                    justifyContent: 'center',
+                    backgroundColor:'#fff',
+                    borderTopColor:'#d3d3d3',
+                    borderTopWidth:1,
+                    borderBottomColor:'#d3d3d3',
+                    borderBottomWidth:1,
+                    borderRightColor:'#d3d3d3',
+                    borderRightWidth:1,
+                  }}>
+                  <TextInput
+                    style={{
+                      fontSize: 18,
+                      color: '#797d7f',
+                      width: '100%',
+                      height: '100%',
+                    }}
+                    value={this.state.searchRestaurants}
+                    placeholder="Search restaurants"
+                    placeholderTextColor={'#797d7f'}
+                    onChangeText={(text)=>{this.setState({searchRestaurants:text},
+                      ()=>{
+                        this.searchRestaurants(text)
+                      }
+                    )}}
+                    autoFocus={true}
+                  />
+                </View>
+            </Layout>
+            </View>
+            <View
+          style={{
+            width: '100%',
+            height:'100%',
+          }}>
+          {
+            this.state.restaurantSearchResults.length!==0
+          ? <ScrollView 
+          style={{width:'100%'}}
+          >
+          <OrderList
+            navigation={this.props.navigation}
+            list={this.state.restaurantSearchResults}
+            listItems={this.state.appData[this.state.listName]}
+          /></ScrollView>
+          : <View
+          style={{
+            width: '100%',
+            height:'100%',
+            alignItems:'center',
+            justifyContent:'center'
+          }}>
+              <Image 
+                source={require('../resources/Images/noresultsfound.png')}
+                style={{width:120, height:120, tintColor:'#55C2FF'}}
+              />
+            </View>
+          }
+        </View>
+        </View>
+    )
   }
 }
 
@@ -629,17 +798,8 @@ const styles1 = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: '3%',
     paddingTop: '1%',
-    shadowColor: '#000',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-
-    elevation: 12,
-    backgroundColor: '#55C2FF',
+    
+    backgroundColor: '#fff',
     borderBottomLeftRadius: 25,
   },
 });

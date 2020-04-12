@@ -23,6 +23,7 @@ import AddButton from '../components/BottomNavHelper/AddButton'
 import { create } from 'react-test-renderer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
 
 const BottomNavigator = createBottomTabNavigator({
@@ -31,7 +32,7 @@ const BottomNavigator = createBottomTabNavigator({
     navigationOptions: ({navigation}) =>( {
       tabBarIcon:({ focused, horizontal, tintColor }) => {
         if (navigation.state.routeName === "Orders") {
-          return <MaterialCommunityIcons name='food' size={25} color={tintColor} />
+          return <FontAwesome5 name='home' size={25} color={tintColor} />
         }
 
     }
