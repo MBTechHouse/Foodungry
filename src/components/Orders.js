@@ -9,7 +9,7 @@ import {
   Dimensions,
   ScrollView,
   Animated,
-  ImageBackground,
+  PermissionsAndroid,
 } from 'react-native';
 import {Button, Layout, Icon} from 'react-native-ui-kitten';
 import OrderCard from '../HelperComponents/OrderCard';
@@ -24,6 +24,8 @@ import firebase from 'firebase';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SlideUpDrawer from '../HelperComponents/SlideUpDrawer';
+import Geolocation from '@react-native-community/geolocation';
+import {crowDistanceCalculator} from '../HelperComponents/DistanceCalculator'
 
 const screenHeight = Dimensions.get('screen').height;
 export default class Orders extends React.Component {
@@ -44,6 +46,7 @@ export default class Orders extends React.Component {
     animation: new Animated.Value(0),
     sourceOpen: false,
     filterMode: 0,
+    location: null,
     filters: {
       sort: {
         price: {
@@ -87,7 +90,7 @@ export default class Orders extends React.Component {
     0 - sort
     1 - filter
   */
-
+  
   componentWillMount() {
     this.animatedValue = new Animated.Value(0);
   }
@@ -103,6 +106,36 @@ export default class Orders extends React.Component {
         }),
       );
     this.setState({sourceOpen: true}, () => this.handleOpen());
+  }
+
+  async requestGeoLocation() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          'title': 'Foodungry',
+          'message': 'Foodungry wants access to your location '
+        }
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("You can use the location") 
+        Geolocation.getCurrentPosition(
+          position => {
+            const initialPosition = position;
+            console.log(initialPosition);
+            let latitude = 12.913101
+            let longitude = 77.540240
+            this.setState({location: {latitude: latitude, longitude: longitude}})
+          },
+          error => Alert.alert('Error', JSON.stringify(error)),
+          {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+        );
+      } else {
+        console.log("location permission denied")
+      }
+    } catch (err) {
+      console.warn(err)
+    }
   }
 
   animatebackgroundLtoR(swipeVal) {
@@ -408,7 +441,8 @@ export default class Orders extends React.Component {
                   marginLeft: '2%',
                 }}>
                 <TouchableOpacity
-                  style={{flexDirection: 'row', alignItems: 'center'}}>
+                  style={{flexDirection: 'row', alignItems: 'center'}}
+                  onPress={()=>this.requestGeoLocation()}>
                   <Icon
                     name="edit-outline"
                     width={this.w * 0.06}
@@ -745,21 +779,41 @@ export default class Orders extends React.Component {
               {sortOptions.options.map(option => {
                 return (
                   <TouchableOpacity style={{
-                    padding:'4%',
-                    borderWidth:1,
-                    borderColor:'#bfbfbf',
+                    paddingLeft:'2%',
+                    paddingRight:'2%',
+                    borderWidth:option.value === sortOptions.value?3:1,
+                    borderColor:option.value === sortOptions.value?'#20a6fc':'#bfbfbf',
                     borderRadius:20,
                     backgroundColor:'#fff',
                     height:60,
-                    elevation:5
-                  }}>
+                    elevation:5,
+                    paddingTop:'4%',
+                    paddingBottom:'4%',
+                    alignItems:'center',
+                    justifyContent:'center'
+                  }}
+                  onPress={()=>{
+                    let newFilters = {...this.state.filters}
+                      if(newFilters.sort[option.optionId].value === option.value) 
+                        newFilters.sort[option.optionId].value = null
+                      else {
+                        Object.keys(newFilters.sort).map(sortId=>{
+                          newFilters.sort[sortId].value = null
+                         })
+                        newFilters.sort[option.optionId].value = option.value
+                      }
+                      this.setState({
+                        filters: newFilters
+                      })
+                  }}
+                  >
                     <MaterialCommunityIcons
                       color="#20a6fc"
-                      size={45}
+                      size={35}
                       name={
-                        option.value === filters.sort[option.optionId].value 
-                        ? "radio-button-checked"
-                        : "radio-button-unchecked"
+                        option.value === "ASC"
+                        ? "sort-ascending"
+                        : "sort-descending"
                       }
                     />
                   </TouchableOpacity>
@@ -768,49 +822,6 @@ export default class Orders extends React.Component {
             </View>
           </View>,
         );
-        // sortOptions.options.forEach(option=>{
-        //   //console.log(option.optionId,option.value, filters.sort[option.optionId])
-        //   filterOptions.push(
-        //     <View style={{
-        //       flexDirection:'row',
-        //       width:'100%',
-        //       height:35
-        //     }}>
-
-        {
-          /* <TouchableOpacity
-                    onPress={()=>{
-                      let newFilters = {...this.state.filters}
-                      Object.keys(newFilters.sort).map(sortId=>{
-                        newFilters.sort[sortId].value = null
-                      })
-                      newFilters.sort[option.optionId].value = option.value
-                      console.log(newFilters.sort)
-                      this.setState({
-                        filters: newFilters
-                      })
-                    }}
-                  >
-                  <MaterialIcons 
-                    color="#20a6fc"
-                    size={23}
-                    name={
-                      option.value === filters.sort[option.optionId].value 
-                      ? "radio-button-checked"
-                      : "radio-button-unchecked"
-                    }
-                  />
-                  </TouchableOpacity>
-                  <Text style={{
-                    fontSize:18, 
-                    color:'#333333',
-                    paddingLeft:'5%'
-                }}>{option.label}</Text> */
-        }
-
-        //</View>
-        //)
-        // })
       });
       return <ScrollView style={{width:'100%'}}>
         {filterOptions}
@@ -930,30 +941,47 @@ export default class Orders extends React.Component {
               let selectedSortOptions = [];
               Object.entries(filters.sort).map(([sortId, sortOptions]) => {
                 if (sortOptions.value !== null) {
-                  selectedSortOptions.push({
+                  selectedSortOptions = {
                     id: sortId,
                     value: sortOptions.value,
-                  });
+                  };
                   noSort = false;
                 }
               });
               if (!noSort) {
+                if(selectedSortOptions.id === 'distance'&&this.state.location===null) {
+                  this.requestGeoLocation()
+                }
                 let data = this.state.appData[this.state.listName];
                 let restaurantList = [];
                 Object.entries(data).map(([key, restaurant]) => {
+                  let latlng = restaurant.latlng.split(',')
+                  let location = {latitude: parseFloat(latlng[0]), longitude: parseFloat(latlng[1])}
                   restaurantList.push({
                     restaurantId: key,
                     rating: restaurant.rating,
+                    price: restaurant.price,
+                    distance: crowDistanceCalculator(
+                        this.state.location.latitude, 
+                        this.state.location.longitude, 
+                        location.latitude, 
+                        location.longitude, 
+                        'K'
+                      )
                   });
                 });
                 console.log('Sort options');
-                selectedSortOptions.forEach(sortOption => {
-                  console.log(sortOption);
-                });
-                restaurantList.sort((a, b) =>
-                  a.sortValue > b.sortValue ? -1 : 1,
-                );
-                console.log(restaurantList);
+                    if(selectedSortOptions.value === "ASC") {
+                      restaurantList.sort((a, b) => a[selectedSortOptions.id] < b[selectedSortOptions.id] ? -1 : 1);
+                    }
+                    else{
+                      restaurantList.sort((a, b) => a[selectedSortOptions.id] > b[selectedSortOptions.id] ? -1 : 1);
+                    }
+                console.log(restaurantList)
+                let searchResult = restaurantList.map(res => res.restaurantId)
+                this.setState({list: searchResult})
+                this.onDrawerClose()
+                console.log(searchResult);
               }
             }}>
             <Text style={{fontSize: 20, color: '#fff', fontWeight: 'bold'}}>

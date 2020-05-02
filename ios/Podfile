@@ -36,6 +36,8 @@ target 'Foodungry' do
 
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
 
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+
   target 'FoodungryTests' do
     inherit! :search_paths
     # Pods for testing
