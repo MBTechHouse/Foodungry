@@ -105,7 +105,6 @@ export default class Orders extends React.Component {
           list: Object.keys(snapshot.val().restaurants),
         }),
       );
-    this.setState({sourceOpen: true}, () => this.handleOpen());
   }
 
   async requestGeoLocation() {

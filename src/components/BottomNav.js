@@ -18,6 +18,7 @@ import HomeScreen from './HomeScreen.js'
 import Login from './Login.js'
 import Signup from './Signup.js'
 import CustomerFeeback from './CustomerFeedback'
+import PastOrders from '../screens/PastOrders'
 
 import AddButton from '../components/BottomNavHelper/AddButton'
 import { create } from 'react-test-renderer';
@@ -90,7 +91,8 @@ const OrderNavigator = createStackNavigator(
     BottomNav: BottomNavigator,
     OrderItemList: OrderItems,
     ViewCart: ViewCart,
-    CustomerFeeback: CustomerFeeback
+    CustomerFeeback: CustomerFeeback,
+    PastOrders: PastOrders
   },
   {
     initialRouteName: 'BottomNav',

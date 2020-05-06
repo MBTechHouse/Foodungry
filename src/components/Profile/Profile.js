@@ -50,8 +50,8 @@ class SettingsScreen extends Component {
     email:''
   }
 
-  onPressOptions = () => {
-    //this.props.navigation.navigate('options')
+  onPressOptions = (screen) => {
+    this.props.navigation.navigate(screen)
   }
 
   onChangePushNotifications = () => {
@@ -114,6 +114,46 @@ class SettingsScreen extends Component {
             rightIcon={<Chevron />}
           />
         </View>
+        <View>
+          <ListItem
+            // chevron
+            title="Past Orders"
+            rightTitle=""
+            rightTitleStyle={{ fontSize: 15 }}
+            onPress={() => this.onPressOptions('PastOrders')}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{ backgroundColor: '#FAD291' }}
+                icon={{
+                  type: 'materialCommunityIcons',
+                  name: 'history',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+        </View>
+        <View>
+          <ListItem
+            // chevron
+            title="Bookmark"
+            rightTitle=""
+            rightTitleStyle={{ fontSize: 15 }}
+            onPress={() => this.onPressOptions()}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{ backgroundColor: '#FAD291' }}
+                icon={{
+                  type: 'FontAwesome',
+                  name: 'bookmark',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+        </View>
         <InfoText text="More" />
         <View>
           <ListItem
@@ -129,6 +169,28 @@ class SettingsScreen extends Component {
                 icon={{
                   type: 'materialicon',
                   name: 'feedback',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+        </View>
+        <View>
+          <ListItem
+            title="Adios Amigos"
+            onPress={() => {
+              firebase.auth().signOut()
+              this.props.navigation.navigate('Login')
+              }}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{
+                  backgroundColor: '#00C001',
+                }}
+                icon={{
+                  type: 'font-awesome',
+                  name: 'power-off',
                 }}
               />
             }
