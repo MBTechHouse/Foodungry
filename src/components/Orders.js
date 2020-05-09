@@ -1023,6 +1023,7 @@ export default class Orders extends React.Component {
             contentContainerStyle={{flexGrow: 1}}
             backgroundColor={'white'}
             parallaxHeaderHeight={this.h * 0.718}
+            stickyHeaderHeight={this.h*0.14}
             renderForeground={() => this.getForeground()}
             renderStickyHeader={() => this.stickyHeader()}
             fadeOutForeground={false}

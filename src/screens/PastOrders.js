@@ -12,6 +12,7 @@ export default class PastOrders extends Component {
         let orders = []
         firebase.database().ref(`users/${firebase.auth().currentUser.uid}/myOrders`).on('value',(orderIds)=>{
             if(orderIds.val()!==null) {
+                console.log(orderIds.val())
                 Object.keys(orderIds.val()).map(orderId=>{
                     firebase.database().ref(`orders/${orderId}`).on('value',(order)=>{
                         firebase.database().ref(`1FithETVAzs4Yb2iZtUPkEcqm2jXIjGnsBiVVgRPAcdc/restaurants/${order.val().restId}`).once('value',(restaurant)=>{
