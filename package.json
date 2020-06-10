@@ -18,6 +18,7 @@
     "@ui-kitten/eva-icons": "^4.2.0",
     "create-react-class": "^15.6.3",
     "firebase": "^7.6.2",
+    "moment": "^2.26.0",
     "native-base": "2.13.4",
     "prop-types": "^15.6.0",
     "react": "16.9.0",

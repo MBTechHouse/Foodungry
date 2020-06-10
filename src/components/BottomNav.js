@@ -19,6 +19,7 @@ import Login from './Login.js'
 import Signup from './Signup.js'
 import CustomerFeeback from './CustomerFeedback'
 import PastOrders from '../screens/PastOrders'
+import Schedule from '../screens/Schedule'
 
 import AddButton from '../components/BottomNavHelper/AddButton'
 import { create } from 'react-test-renderer';
@@ -40,11 +41,11 @@ const BottomNavigator = createBottomTabNavigator({
 
     })
   },
-  Search: {
-    screen: Search,
+  Schedule: {
+    screen: Schedule,
     navigationOptions: ({navigation}) =>({
       tabBarIcon:({ focused, horizontal, tintColor }) => {
-        if (navigation.state.routeName === "Search") {
+        if (navigation.state.routeName === "Schedule") {
           return <MaterialIcons name='schedule' size={25} color={tintColor} />
         }
     }

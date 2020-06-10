@@ -96,14 +96,17 @@ export default class Orders extends React.Component {
   }
 
   componentDidMount() {
+    console.log("sbhb:")
     firebase
       .database()
       .ref('/1FithETVAzs4Yb2iZtUPkEcqm2jXIjGnsBiVVgRPAcdc/')
-      .on('value', snapshot =>
+      .on('value', snapshot =>{
+        console.log(snapshot.val())
         this.setState({
           appData: snapshot.val(),
           list: Object.keys(snapshot.val().restaurants),
-        }),
+        })
+      }
       );
   }
 
