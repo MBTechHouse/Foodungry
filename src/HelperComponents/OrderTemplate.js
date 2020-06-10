@@ -95,7 +95,7 @@ export default class OrderTemplate extends React.Component {
     onHelpPress(opt) {
         let temp = {}
 
-        let helpId = 'help_'+moment().unix()
+        let helpId = 'help_'+moment().valueOf()
         let helpObj = {
             ordId: this.state.helpOid,
             srcId: this.state.email,
@@ -119,14 +119,14 @@ export default class OrderTemplate extends React.Component {
     formTime(time) {
         if(time == '')
           return '-:-'
-        let at = moment.unix(time)
+        let at = moment(time)
         return at.hour()+":"+at.minute()
     }
 
     formDate(date) {
         if(date == '')
           return '-/-/-'
-        let at = moment.unix(date)
+        let at = moment(date)
         return at.date()+"/"+at.month()+"/"+at.year()
     }
 

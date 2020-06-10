@@ -158,7 +158,7 @@ export default class Orderitems extends React.Component{
       let title = this.state.foodItemName
       let description = this.state.foodItemDescription
       let actualPrice = this.state.foodItemActualPrice
-      let currentEpochTime = moment().unix()
+      let currentEpochTime = moment().valueOf()
       if(title!=="" && actualPrice!=="") {
         if(/^\d+$/.test(actualPrice)) {
             let itemObject = {} 
@@ -193,7 +193,7 @@ export default class Orderitems extends React.Component{
   }
 
   addCategory(categoryName) {
-    let currentEpochTime = moment().unix()
+    let currentEpochTime = moment().valueOf()
     let items = {...this.state.items}
     let categoryList = [...this.state.categoryList]
     let categoryId = `category_${currentEpochTime}`
