@@ -2,111 +2,222 @@ import React from 'react';
 import {
   Icon,
   BottomNavigation,
-  BottomNavigationTab
+  BottomNavigationTab,
 } from 'react-native-ui-kitten';
 
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import {createStackNavigator} from 'react-navigation-stack'
-import {createAppContainer} from 'react-navigation'
-import Orders from './Orders'
-import Search from './Search'
-import Victor from './Victor'
-import Profile from './Profile'
-import OrderItems from './OrderItems'
-import ViewCart from './ViewCart'
-import HomeScreen from './HomeScreen.js'
-import Login from './Login.js'
-import Signup from './Signup.js'
-import CustomerFeeback from './CustomerFeedback'
+import { createBottomTabNavigator,createMaterialTopTabNavigator } from 'react-navigation-tabs';
+import {createStackNavigator} from 'react-navigation-stack';
+import {createAppContainer} from 'react-navigation';
+import Restaurants from './Restaurants';
+import Profile from './Profile';
+import Received from './Orders/Received';
+import Preparing from './Orders/Preparing';
+import Ready from './Orders/Ready';
+import Completed from './Orders/Completed';
+import ManageItems from './ManageItems';
+import Login from './Login.js';
+import Signup from './Signup.js';
+import RestHelp from './Help/RestHelp';
+import UserHelp from './Help/UserHelp';
 
-import AddButton from '../components/BottomNavHelper/AddButton'
+const OrdersNavigator = createMaterialTopTabNavigator ({
+  Received: {
+    screen: Received,
+    navigationOptions:{
+      tabBarIcon: ({ focused, tintcolor }) => (
+        <Icon name='paper-plane' width={25} height={25} tintColor={focused?'#55C2FF':'#000'} />
+      )
+    }
+  },
+  Preparing: {
+    screen: Preparing,
+    navigationOptions:{
+      tabBarIcon: ({ focused, tintcolor }) => (
+        <Icon name='clock-outline' width={25} height={25} tintColor={focused?'#55C2FF':'#000'} />
+      )
+    }
+  },
+  Ready: {
+    screen: Ready,
+    navigationOptions:{
+      tabBarIcon: ({ focused, tintcolor }) => (
+        <Icon name='done-all' width={25} height={25} tintColor={focused?'#55C2FF':'#000'} />
+      )
+    }
+  },
+  Completed: {
+    screen: Completed,
+    navigationOptions:{
+      tabBarIcon: ({ focused, tintcolor }) => (
+        <Icon name='person-done-outline' width={25} height={25} tintColor={focused?'#55C2FF':'#000'} />
+      )
+    }
+  }
+}, {
+  headerMode: 'none',
+  tabBarOptions: {
+    activeTintColor: '#55C2FF',  // Color of tab when pressed
+    inactiveTintColor: '#b5b5b5', // Color of tab when not pressed
+    showIcon: 'true', // Shows an icon for both iOS and Android
+    showLabel: true,
+    labelStyle: {
+      fontSize: 10
+    },
+    style: {
+      backgroundColor: '#fdfdfd',
+      height: '9%'
+    }
+  }
+});
 
-const OrderNavigator = createStackNavigator(
+
+const RestOptsNavigator = createBottomTabNavigator(
   {
-    Orders: Orders,
-    OrderItemList: OrderItems,
-    ViewCart: ViewCart,
-    CustomerFeeback: CustomerFeeback
+    Orders: {
+      screen: OrdersNavigator,
+      navigationOptions: ({navigation}) => ({
+        tabBarIcon: ({focused, horizontal, tintColor}) => {
+          console.log(navigation.state.index);
+          if (navigation.state.routeName === 'Orders') {
+            return (
+              <Icon name="clipboard" width={25} height={25} fill={tintColor} />
+            );
+          }
+        },
+      }),
+    },
+    ManageItems: {
+      screen: ManageItems,
+      navigationOptions: ({navigation}) => ({
+        tabBarIcon: ({focused, horizontal, tintColor}) => {
+          console.log(navigation.state.index, tintColor);
+          if (navigation.state.routeName === 'ManageItems') {
+            return (
+              <Icon
+                name="book-open"
+                width={25}
+                height={25}
+                fill={tintColor}
+              />
+            );
+          }
+        },
+      }),
+    },
   },
   {
     initialRouteName: 'Orders',
-    headerMode: 'none'
-  }
+    tabBarOptions: {
+      showLabel: false,
+      activeTintColor: '#55c2ff',
+      inactiveTintColor: '#272727',
+    },
+  },
 );
 
-
-
-const BottomNavigator = createBottomTabNavigator({
-  Victor: {
-    screen: Victor,
-    navigationOptions: ({navigation}) =>( {
-      tabBarIcon:({ focused, horizontal, tintColor }) => {
-        console.log(navigation.state.index, tintColor)
-        if (navigation.state.routeName === "Victor") {
-          return <Icon name='people-outline' width={25} height={25} fill={tintColor} />
-        }
-
-    }
-
-    })
-  },
-  Search: {
-    screen: Search,
-    navigationOptions: ({navigation}) =>({
-      tabBarIcon:({ focused, horizontal, tintColor }) => {
-        if (navigation.state.routeName === "Search") {
-          return <Icon name='search' width={25} height={25} fill={tintColor} />
-        }
-    }
-
-    })
-  },
-  Orders:{
-    screen: OrderNavigator,
-    navigationOptions: {
-      tabBarIcon: <AddButton />
+const HelpNavigator = createMaterialTopTabNavigator ({
+  Restaurants: {
+    screen: RestHelp,
+    navigationOptions:{
+      tabBarIcon: ({ focused, tintcolor }) => (
+        <Icon name='car' width={25} height={25} tintColor={focused?'#55C2FF':'#000'} />
+      )
     }
   },
-  Cart: {
-    screen: ViewCart,
-    navigationOptions: ({navigation}) =>({
-      tabBarIcon:({ focused, horizontal, tintColor }) => {
-        if (navigation.state.routeName === "Cart") {
-          return <Icon name='shopping-cart-outline' width={25} height={25} fill={tintColor} />
-        }
+  Users: {
+    screen: UserHelp,
+    navigationOptions:{
+      tabBarIcon: ({ focused, tintcolor }) => (
+        <Icon name='person-done' width={25} height={25} tintColor={focused?'#55C2FF':'#000'} />
+      )
     }
-
-    })
-  },
-  Profile: {
-    screen: Profile,
-    navigationOptions: ({navigation}) =>({
-      tabBarIcon:({ focused, horizontal, tintColor }) => {
-        console.log(navigation.state.index)
-        if (navigation.state.routeName === "Profile") {
-          return <Icon name='person' width={25} height={25} fill={tintColor} />
-        }
-    }
-
-    })
   }
 }, {
-  initialRouteName: 'Orders',
-  tabBarOptions:{  showLabel: false,
-    activeTintColor: '#55c2ff',
-    inactiveTintColor: '#272727'},
+  headerMode: 'none',
+  tabBarOptions: {
+    activeTintColor: '#55C2FF',  // Color of tab when pressed
+    inactiveTintColor: '#b5b5b5', // Color of tab when not pressed
+    showIcon: 'true', // Shows an icon for both iOS and Android
+    showLabel: true,
+    labelStyle: {
+      fontSize: 10
+    },
+    style: {
+      backgroundColor: '#fdfdfd',
+      height: '9%'
+    }
+  }
 });
 
-const MainNav = createStackNavigator({
-  Login: Login,
-  Signup: Signup,
-  HomeScreen: HomeScreen,
-  MainFlow: BottomNavigator},
+const BottomNavigator = createBottomTabNavigator(
+  {
+    Help: {
+      screen: HelpNavigator,
+      navigationOptions: ({navigation}) => ({
+        tabBarIcon: ({focused, horizontal, tintColor}) => {
+          console.log(navigation.state.index, tintColor);
+          if (navigation.state.routeName === 'Help') {
+            return (
+              <Icon
+                name="message-circle"
+                width={25}
+                height={25}
+                fill={tintColor}
+              />
+            );
+          }
+        },
+      }),
+    },
+    Restaurants: {
+      screen: Restaurants,
+      navigationOptions: ({navigation}) => ({
+        tabBarIcon: ({focused, horizontal, tintColor}) => {
+          console.log(navigation.state.index);
+          if (navigation.state.routeName === 'Restaurants') {
+            return (
+              <Icon name="home-outline" width={25} height={25} fill={tintColor} />
+            );
+          }
+        },
+      }),
+    },
+    Profile: {
+      screen: Profile,
+      navigationOptions: ({navigation}) => ({
+        tabBarIcon: ({focused, horizontal, tintColor}) => {
+          console.log(navigation.state.index);
+          if (navigation.state.routeName === 'Profile') {
+            return (
+              <Icon name="person" width={25} height={25} fill={tintColor} />
+            );
+          }
+        },
+      }),
+    },
+  },
+  {
+    initialRouteName: 'Restaurants',
+    tabBarOptions: {
+      showLabel: false,
+      activeTintColor: '#55c2ff',
+      inactiveTintColor: '#272727',
+    },
+  },
+);
+
+const MainNav = createStackNavigator(
+  {
+    Login: Login,
+    Signup: Signup,
+    MainFlow: BottomNavigator,
+    RestOptsNavigator: RestOptsNavigator,
+  },
   {
     initialRouteName: 'Login',
     header: null,
-  headerMode: 'none'
-  }
-)
+    headerMode: 'none',
+  },
+);
 
 export const BottomNav = createAppContainer(MainNav);

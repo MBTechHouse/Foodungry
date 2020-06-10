@@ -12,17 +12,16 @@ import {
   ImageBackground,
 } from 'react-native';
 import {Button, Layout, Icon} from 'react-native-ui-kitten';
-import OrderCard from '../HelperComponents/OrderCard';
-import OrderList from '../HelperComponents/OrderList';
+import RestList from '../HelperComponents/RestList';
 import Carousel from 'react-native-snap-carousel';
-import SliderEntry from '../components/carousel/SliderEntry';
+import SliderEntry from './carousel/SliderEntry';
 import {BoxShadow} from 'react-native-shadow';
-import styles, {colors} from '../components/carousel/index.style';
-import {sliderWidth, itemWidth} from '../components/carousel/SliderEntry.style';
+import styles, {colors} from './carousel/index.style';
+import {sliderWidth, itemWidth} from './carousel/SliderEntry.style';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import firebase from 'firebase';
 
-export default class Orders extends React.Component {
+export default class Restaurants extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -556,7 +555,6 @@ export default class Orders extends React.Component {
       inputRange: [0, 150],
       outputRange: ['rgb(255,255,255)', 'rgb(85,194,255)'],
     });
-    console.log(this.props.navigation.getParam('ordermode'));
     return (
         <ParallaxScrollView
           style={styles1.container} contentContainerStyle={{flexGrow:1}}
@@ -587,7 +585,7 @@ export default class Orders extends React.Component {
             top: this.h * 0.01,
             marginBottom: this.h * 0.03,
           }}>
-          <OrderList
+          <RestList
             navigation={this.props.navigation}
             list={this.state.list}
             listItems={this.state.appData[this.state.listName]}

@@ -10,7 +10,7 @@ import {
 } from 'react-native-ui-kitten';
 import firebase from 'firebase';
 
-export default class OrderList extends React.Component {
+export default class RestList extends React.Component {
   constructor() {
     super();
     //initialize state
@@ -26,7 +26,7 @@ export default class OrderList extends React.Component {
       onPanResponderRelease: (event, gestureState) => {
         console.log("Locs",event.nativeEvent.locationX.toFixed(2),"  ",event.nativeEvent.locationY.toFixed(2))
         
-          this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode')})
+          this.props.navigation.navigate('RestOptsNavigator', {restId:restId})
         
       },
     });
@@ -56,7 +56,7 @@ export default class OrderList extends React.Component {
 handlePress(evt, restId){
   console.log(restId)
   console.log(`x coord = ${evt.nativeEvent.locationX.toFixed(2)} y coord = ${evt.nativeEvent.locationY.toFixed(2)}`);
-  this.props.navigation.navigate('OrderItemList', {ordermode: this.props.navigation.getParam('ordermode'), restId: restId})
+  this.props.navigation.navigate('RestOptsNavigator', {restId: restId})
 }
 
   restCard(restId, rest) {
