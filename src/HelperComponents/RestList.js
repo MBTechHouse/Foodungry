@@ -66,11 +66,11 @@ handlePress(evt, restId){
           onPress={(evt) => this.handlePress(evt, restId)}
         >
 
-            <View  style={{ position:'absolute', elevation:6, left:7, height:70, width: 85, borderRadius:20 }} >
+            <View  style={{ position:'absolute', zIndex:1, left:7, height:70, width: 85, borderRadius:20 }} >
               <Image source={{uri: rest.image}} style={{ resizeMode:"stretch", height: '100%', width: '100%', borderRadius: 20 }} />
             </View>
 
-            <Layout style={{width:'85%', height:90, borderRadius:20, elevation: 5, padding: 5, marginLeft: '15%' }} >
+            <Layout style={{width:'85%', height:90, borderRadius:20, borderWidth: 1, borderColor:'#77777750', padding: 5, marginLeft: '15%' }} >
               <Layout style={{ marginLeft: '17%' }}>
                 <Text style={{fontWeight:'bold', fontSize:15, width:'100%', fontFamily: 'serif' }}>{rest.name}</Text>
                 <Text style={{fontSize:10, color:'#757575', width:'100%', marginTop: '3%'}}>{rest.type}</Text>

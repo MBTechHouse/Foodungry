@@ -37,15 +37,15 @@ export default class OrderTemplate extends React.Component {
                     let myOrd = {}
                     let hlp = {}
                     let em = ''
-                    if(o && o != null && o.val() != null)
+                    if(o && o != null && o.val() && o.val() != null)
                         ord = o.val()
-                    if(r.val() && r != null && r.val() != null)
+                    if(r && r != null && r.val() && r.val() != null)
                     {
                         em = r.val().email
                         if(r.val().myOrders && r.val().myOrders != null)
                             myOrd = r.val().myOrders
                     }
-                    if(h && h != null && h.val() != null)
+                    if(h && h != null && h.val() && h.val() != null)
                         hlp = h.val()
                     this.setState({ orders: ord, myOrders: myOrd, help: hlp, email: em }, () => {
                         let oids = Object.keys(this.state.myOrders)
@@ -257,22 +257,23 @@ export default class OrderTemplate extends React.Component {
         return (
         <View>
             <Modal
-                animationType="slide"
                 transparent={true}
                 visible={this.state.chooseHelp}
                 onRequestClose={() => this.setState({ chooseHelp: false, curOpts: helpOpts['root'].slice(), showBack: false })}
             >
-                <View style={{
-                    height: '40%',width: '80%', backgroundColor: '#fdfdfd', marginTop: '50%',
-                    alignSelf: 'center', borderRadius: 10, elevation: 10
-                    }}>
-                    <TouchableOpacity onPress={() => this.state.showBack?this.setState({ curOpts: helpOpts['root'].slice(), showBack: false }):this.setState({ chooseHelp: false, showBack: false })}>
-                        <Text style={{ textAlign: 'right', marginTop: 7, marginRight: 10, fontSize: 22, color: '#bcbcbc'}}>{this.state.showBack?'<':'x'}</Text>
-                    </TouchableOpacity>
-                    <View style={{ height: '250%', borderRadius: 10 }}>
-                        <ScrollView style={{height: '100%', borderRadius: 10 }}>
-                            {this.renderOptions()}
-                        </ScrollView>
+                <View style={{ flex: 1, backgroundColor: '#77777750' }}>
+                    <View style={{
+                        height: '40%',width: '80%', backgroundColor: '#fdfdfd', marginTop: '50%',
+                        alignSelf: 'center', borderRadius: 10, elevation: 10
+                        }}>
+                        <TouchableOpacity onPress={() => this.state.showBack?this.setState({ curOpts: helpOpts['root'].slice(), showBack: false }):this.setState({ chooseHelp: false, showBack: false })}>
+                            <Text style={{ textAlign: 'right', marginTop: 7, marginRight: 10, fontSize: 22, color: '#bcbcbc'}}>{this.state.showBack?'<':'x'}</Text>
+                        </TouchableOpacity>
+                        <View style={{ height: '250%', borderRadius: 10 }}>
+                            <ScrollView style={{height: '100%', borderRadius: 10 }}>
+                                {this.renderOptions()}
+                            </ScrollView>
+                        </View>
                     </View>
                 </View>
             </Modal>
