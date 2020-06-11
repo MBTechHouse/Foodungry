@@ -37,7 +37,7 @@ export default class PastOrders extends Component {
     }
 
     componentDidMount() {
-        let uid = '8PfM82zZ7phlx5eCtA0nkln713l2' // firebase.auth().currentUser.uid
+        let uid = firebase.auth().currentUser.uid
         firebase.database().ref('orders')
         .on('value', o => {
             firebase.database().ref('help/users')
