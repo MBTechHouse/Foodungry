@@ -1,7 +1,5 @@
-Changes
-
 import React, {Component} from 'react'
-import {View, TouchableOpacity, ScrollView, Modal, ActivityIndicator} from 'react-native'
+import {View, TouchableOpacity, ScrollView, Modal, ActivityIndicator, BackHandler} from 'react-native'
 import { Icon, Text } from 'react-native-ui-kitten'
 import firebase from 'firebase'
 import moment from 'moment'
@@ -38,7 +36,31 @@ export default class PastOrders extends Component {
         showBack: false
     }
 
+    componentWillMount() {
+        BackHandler.addEventListener(
+            'pastOrdersBackPress',
+            ()=>{
+              this.props.navigation.navigate('Orders');
+              return true
+            })
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener(
+            'pastOrdersBackPress',
+            ()=>{
+              this.props.navigation.navigate('Orders');
+              return true
+            })
+    }
+
     componentDidMount() {
+        BackHandler.addEventListener(
+            'pastOrdersBackPress',
+            ()=>{
+              this.props.navigation.navigate('Orders');
+              return true
+            })
         let uid = firebase.auth().currentUser.uid
         firebase.database().ref('orders')
         .on('value', o => {
@@ -69,6 +91,11 @@ export default class PastOrders extends Component {
                         em = u.val().email
                         if(u.val().myOrders && u.val().myOrders != null)
                             myOrd = u.val().myOrders
+                            console.log("Dwwdw", myOrd)
+                        if(u.val().currentOrdId && myOrd[u.val().currentOrdId])
+                            delete myOrd[u.val().currentOrdId]
+                        
+                            console.log("Dwwdw11111", myOrd)
                     }
                     if(h && h != null && h.val() && h.val() != null)
                         hlp = h.val()
