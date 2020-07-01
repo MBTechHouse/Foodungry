@@ -518,7 +518,7 @@ export default class ViewCart extends React.Component{
       )
     }
     return (
-      <TouchableOpacity style={{position:'absolute', bottom:60, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
+      <TouchableOpacity style={{position:'absolute', bottom:0, left:0, width:'100%', height:60, backgroundColor:'#55C2FF', borderTopRightRadius:40,
                                 flexDirection:"row", borderRightColor: '#A6E7F9', borderRightWidth: 15, borderTopColor: '#A6E7F9', borderTopWidth: 7}}
                         onPress={() => {
                             this.createOrder()
@@ -628,12 +628,12 @@ export default class ViewCart extends React.Component{
         </Layout>
         {
           this.state.cart !== null 
-      ? <View>
-        <ScrollView style={styles.container}>
-          {this.getScrollView()}
-        </ScrollView>
-        {this.footer()}
-      </View>
+      ? <View style={{ flex: 1 }}>
+          <ScrollView style={styles.container}>
+            {this.getScrollView()}
+          </ScrollView>
+          {this.footer()}
+        </View>
       : <Image 
           source={require('../resources/Images/emptyCart.png')}
           style={{width:'100%', height:'100%', resizeMode:'center'}} />
