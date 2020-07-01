@@ -19,13 +19,16 @@ import Login from './Login.js'
 import Signup from './Signup.js'
 import CustomerFeeback from './CustomerFeedback'
 import PastOrders from '../screens/PastOrders'
+import OrderDetails from '../screens/OrderDetails'
 import Schedule from '../screens/Schedule'
+import CurrentOrder from '../screens/profile/CurrentOrder'
 
 import AddButton from '../components/BottomNavHelper/AddButton'
 import { create } from 'react-test-renderer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+
 
 
 const BottomNavigator = createBottomTabNavigator({
@@ -93,7 +96,9 @@ const OrderNavigator = createStackNavigator(
     OrderItemList: OrderItems,
     ViewCart: ViewCart,
     CustomerFeeback: CustomerFeeback,
-    PastOrders: PastOrders
+    PastOrders: PastOrders,
+    CurrentOrder: CurrentOrder,
+    OrderDetails: OrderDetails
   },
   {
     initialRouteName: 'BottomNav',

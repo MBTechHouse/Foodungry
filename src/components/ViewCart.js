@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View, Alert, ToastAndroid } from 'react-native';
+import { StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, View, Alert, ToastAndroid, BackHandler } from 'react-native';
 import { Button, Layout, Text, Icon, Input } from 'react-native-ui-kitten';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import StepProgress from 'react-native-step-progress';
@@ -32,13 +32,23 @@ export default class ViewCart extends React.Component{
     arrTimePicker: true,
     scheduleTime: '',
     orderDates : [],
-    scheduleDateMode: 0
+    scheduleDateMode: 0,
+    currentOrderPending: false
   }
 
+  handleBackButtonClick() {
+    console.log("Props",this.props.navigation)
+    this.props.navigation.navigate('Orders');
+    return true;
+  }
 
-
-  componentDidMount()
-  {
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'viewCartBackPress',
+      ()=>{
+        this.props.navigation.navigate('Orders');
+        return true
+      })
     firebase.database().ref('users/'+firebase.auth().currentUser.uid)
       .on('value', snapshot => this.setState({ 
         user: snapshot.val(),
@@ -46,15 +56,24 @@ export default class ViewCart extends React.Component{
         totalPrice: snapshot.val().cartScreen?snapshot.val().cartScreen.totalPrice:0,
         totalItems: snapshot.val().cartScreen?snapshot.val().cartScreen.totalItems:0,
         restId: snapshot.val().cartScreen?snapshot.val().cartScreen.restId:'',
+        currentOrderPending: snapshot.val().currentOrdId ? true : false
       }, () => {
         if(snapshot.val() 
         && snapshot.val() !==null
         && snapshot.val().myOrders)
           this.setOrderDates(snapshot.val().myOrders)
-        if(this.state.user.pendingOrd == 1)
           this.updatePage()
       }
     ));
+  }
+
+  componentWillUnmount() {
+    BackHandler.addEventListener(
+      'viewCartBackPress',
+      ()=>{
+        this.props.navigation.navigate('Orders');
+        return true
+      })
   }
 
   setOrderDates(userOrders) {
@@ -67,22 +86,33 @@ export default class ViewCart extends React.Component{
   }
 
   updatePage() {
-    firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/myOrders')
-    .once('value', order => {
-      let arr = Object.keys(order.val())
-      firebase.database().ref('orders/'+arr[arr.length-1])
-      .on('value', ord => this.setState({ step: ord.val().status, ordTime: ord.val().ordTime, arrTime: parseFloat(arr[arr.length-1].split('_')[1]) }, () => {
-        if(this.state.step == 3)
-          firebase.database().ref('users/'+firebase.auth().currentUser.uid).update({ pendingOrd: 0 })
-      }))
+    console.log("ddwdwsteop",this.state.step)
+    firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/currentOrdId')
+    .on('value', orderId => {
+      if(orderId!==null && orderId.val()!==null) {
+        firebase.database().ref('orders/'+orderId.val())
+        .on('value', ord => {
+          console.log("ddwdwsteop ---- 1",ord.val().status)
+          if(ord.val().status == 3) {
+            firebase.database().ref('users/'+firebase.auth().currentUser.uid).update({ pendingOrd: 0, currentOrdId: {} })
+          }
+        this.setState({ step: ord.val().status, ordTime: ord.val().ordTime, arrTime: parseFloat(orderId.val().split('_')[1]) })
+        })
+      }
     });
   }
 
-  updateCartInfo(cart) {
-    firebase
-      .database()
-      .ref('users/' + firebase.auth().currentUser.uid + '/cartScreen/cart')
-      .set(cart);
+  updateCartInfo(cart, totalPrice, totalItems) {
+    if(Object.keys(cart).length!==0) {
+      let temp = {}
+      console.log("updated",totalPrice)
+      temp['users/' + firebase.auth().currentUser.uid + '/cartScreen/totalPrice'] = totalPrice
+      temp['users/' + firebase.auth().currentUser.uid + '/cartScreen/totalItems'] = totalItems
+      temp['users/' + firebase.auth().currentUser.uid + '/cartScreen/cart'] = cart
+      firebase.database().ref().update(temp);
+    } else {
+      firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/cartScreen').set({})
+    }
   }
 
   renderScheduleOption() {
@@ -217,7 +247,7 @@ export default class ViewCart extends React.Component{
         cartItem.quantity = cartItem.quantity + 1
         cart[key] = cartItem
         totalItems = totalItems + 1
-        totalPrice = totalPrice + item.actualPrice
+        totalPrice = parseInt(totalPrice) + parseInt(item.actualPrice)
 
         this.setState({cart:cart, totalPrice:totalPrice, totalItems:totalItems})}}>
         <Text style={{color:'#7cb342', fontWeight:'bold'}}>ADD +</Text>
@@ -237,15 +267,16 @@ export default class ViewCart extends React.Component{
           cartItem.quantity = cartItem.quantity - 1
           cart[key] = cartItem
           totalItems = totalItems - 1
-          totalPrice = totalPrice - item.actualPrice
+          totalPrice = parseInt(totalPrice) - parseInt(item.actualPrice)
 
           if(cart[key].quantity==0) {
             delete cart[key]
+            this.updateCartInfo(cart, totalPrice, totalItems)
             this.setState({cart:cart, totalPrice:totalPrice, totalItems:totalItems})
-            this.updateCartInfo(cart)
           } else {
+            this.updateCartInfo(cart, totalPrice, totalItems)
             this.setState({cart:cart, totalPrice:totalPrice, totalItems:totalItems})
-            this.updateCartInfo(cart)}
+            }
          }}>
         <Text style={{color:'red', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>-</Text>
         </TouchableOpacity>
@@ -259,9 +290,9 @@ export default class ViewCart extends React.Component{
           cartItem.quantity = cartItem.quantity + 1
           cart[key] = cartItem
           totalItems = totalItems + 1
-          totalPrice = totalPrice + item.actualPrice
-        this.setState({cart:cart, totalPrice:totalPrice, totalItems:totalItems})
-        this.updateCartInfo(cart)
+          totalPrice = parseInt(totalPrice) + parseInt(item.actualPrice)
+          this.updateCartInfo(cart, totalPrice, totalItems)
+          this.setState({cart:cart, totalPrice:totalPrice, totalItems:totalItems})
         }}>
         <Text style={{color:'#7cb342', fontWeight:'bold', paddingLeft:'2.5%', paddingRight:'2.5%',paddingTop:'1%', paddingBottom:'1%'}}>+</Text>
         </TouchableOpacity>
@@ -340,24 +371,19 @@ export default class ViewCart extends React.Component{
       totalPrice: this.state.totalPrice,
       status: 0,
       orderMode: 0,
-      scheduleTime: null
+      scheduleTime: "-"
     }
 
     let temp = {}
 
     temp['orders/' + oid] = ord
     temp['users/' + firebase.auth().currentUser.uid + '/pendingOrd'] = 1
+    temp['users/' + firebase.auth().currentUser.uid + '/currentOrdId'] = "order_" + at
     temp['users/' + firebase.auth().currentUser.uid + '/myOrders/' + oid] = "-"
     temp['restaurants/' + this.state.restId + '/myOrders/' + oid] = "-"
+    temp['users/' + firebase.auth().currentUser.uid + '/cartScreen/'] = {}
 
     firebase.database().ref().update(temp);
-
-    firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/myOrders')
-    .once('value', order => {
-      let arr = Object.keys(order.val())
-      firebase.database().ref('orders/'+arr[arr.length-1]+'/status')
-      .on('value', status => this.setState({ step: status.val() }))
-    });
   }
 
   capturePayment(orderId, t) {
@@ -421,12 +447,6 @@ export default class ViewCart extends React.Component{
       orderMode: 0,
       scheduleTime: ''
     })
-    // firebase.database().ref('users/'+firebase.auth().currentUser.uid+'/myOrders')
-    // .once('value', order => {
-    //   let arr = Object.keys(order.val())
-    //   firebase.database().ref('orders/'+arr[arr.length-1]+'/status')
-    //   .on('value', status => this.setState({ step: status.val() }))
-    // });
   }
 
     
@@ -483,7 +503,7 @@ export default class ViewCart extends React.Component{
       let labels = ['Order\nRequested', 'Preparing\nYour Food', 'Food Is\nReady']
 
       return (
-        <Layout>
+        <Layout style={{bottom:200}}>
           <StepProgress
               customStyles={customStyles}
               currentPosition={this.state.step + 1}
@@ -518,6 +538,7 @@ export default class ViewCart extends React.Component{
   }
 
   checkOrderVicinity(selectedTime) {
+    console.log(this.state.currentOrderPending)
     let orderDates = [...this.state.orderDates]
     let orderInvalid = true
     orderDates.forEach(orderDate=>{
@@ -540,6 +561,7 @@ export default class ViewCart extends React.Component{
           let currentTime = moment()
           if(this.state.arrTimePicker) {
             selectedTime = moment(time);
+            console.log(selectedTime.date())
             if(selectedTime < currentTime)
             Alert.alert("Oops...", "Select a valid time.")
             else {

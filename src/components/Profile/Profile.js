@@ -117,6 +117,26 @@ class SettingsScreen extends Component {
         <View>
           <ListItem
             // chevron
+            title="Current Order"
+            rightTitle=""
+            rightTitleStyle={{ fontSize: 15 }}
+            onPress={() => this.onPressOptions('CurrentOrder')}
+            containerStyle={styles.listItemContainer}
+            leftIcon={
+              <BaseIcon
+                containerStyle={{ backgroundColor: '#FAD291' }}
+                icon={{
+                  type: 'materialCommunityIcons',
+                  name: 'history',
+                }}
+              />
+            }
+            rightIcon={<Chevron />}
+          />
+        </View>
+        <View>
+          <ListItem
+            // chevron
             title="Past Orders"
             rightTitle=""
             rightTitleStyle={{ fontSize: 15 }}

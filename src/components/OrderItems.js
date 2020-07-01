@@ -131,10 +131,12 @@ export default class Orderitems extends React.Component {
             let cart = this.state.cart;
             let totalItems = this.state.totalItems;
             let totalPrice = this.state.totalPrice;
+            console.log("Bedor",totalPrice)
             items[this.state.currentCategorySelected][key].quantity =
               items[this.state.currentCategorySelected][key].quantity + 1;
             totalItems = totalItems + 1;
-            totalPrice = totalPrice + item.actualPrice;
+            totalPrice = parseInt(totalPrice) + parseInt(item.actualPrice);
+            console.log("afdor",totalPrice)
             cart[key] = item;
             this.setState({
               cart: cart,
@@ -173,7 +175,7 @@ export default class Orderitems extends React.Component {
               let totalItems = this.state.totalItems;
               let totalPrice = this.state.totalPrice;
               totalItems = totalItems + 1;
-              totalPrice = totalPrice + item.actualPrice;
+              totalPrice = parseInt(totalPrice) + parseInt(item.actualPrice);
               items[this.state.currentCategorySelected][key].quantity =
                 items[this.state.currentCategorySelected][key].quantity + 1;
               cart[key] = items[this.state.currentCategorySelected][key];
@@ -215,7 +217,7 @@ export default class Orderitems extends React.Component {
               let totalItems = this.state.totalItems;
               let totalPrice = this.state.totalPrice;
               totalItems = totalItems - 1;
-              totalPrice = totalPrice - item.actualPrice;
+              totalPrice = parseInt(totalPrice) - parseInt(item.actualPrice);
               items[this.state.currentCategorySelected][key].quantity =
                 items[this.state.currentCategorySelected][key].quantity - 1;
               cart[key] = items[this.state.currentCategorySelected][key];
@@ -437,6 +439,7 @@ export default class Orderitems extends React.Component {
   _handleViewportLeave = () => {
   };
   render() {
+    console.log("state", this.state.totalPrice)
     return (
       <View>
         <Viewport.Tracker>

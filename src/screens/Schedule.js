@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native'
+import {View, Text, TouchableOpacity, ScrollView, BackHandler} from 'react-native'
 import firebase from 'firebase' 
 
 export default class Schedule extends Component {
@@ -8,7 +8,22 @@ export default class Schedule extends Component {
         orders:[]
     }
 
+    componentWillUnmount() {
+        BackHandler.addEventListener(
+            'scheduleBackPress',
+            ()=>{
+              this.props.navigation.navigate('Orders');
+              return true
+            })
+    }
+    
     componentDidMount() {
+        BackHandler.addEventListener(
+            'scheduleBackPress',
+            ()=>{
+              this.props.navigation.navigate('Orders');
+              return true
+            })
         let orders = [...this.state.orders]
         firebase.database().ref(`users/${firebase.auth().currentUser.uid}/myOrders`).on('value',(orderIds)=>{
             if(orderIds.val()!==null) {
@@ -18,9 +33,9 @@ export default class Schedule extends Component {
                         firebase.database().ref(`1FithETVAzs4Yb2iZtUPkEcqm2jXIjGnsBiVVgRPAcdc/restaurants/${order.val().restId}`).once('value',(restaurant)=>{
                             let orderObj = {...order.val()}
                             orderObj['restaurantName'] = restaurant.val().name
+                            orderObj['orderId'] = orderId
                             let date = new Date(order.val().ordTime)
                             orderObj["date"] = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
-
                             console.log("232323232",orderObj)
                             orders = [...this.state.orders]
                             orders.push(orderObj)
@@ -52,7 +67,14 @@ export default class Schedule extends Component {
                 },
                 shadowOpacity: 0.34,
                 shadowRadius: 6.27,
-                elevation: 10,}}>
+                elevation: 10,}}
+                onPress={()=>{
+                    this.props.navigation.navigate('OrderDetails', {
+                        orderId: order.orderId,
+                        screen: 'Orders'
+                    })
+                }}
+                >
                 <View style={{width:'80%', justifyContent:'center', paddingLeft:'6%'}}>
                     <Text>{order.restaurantName}</Text>
                     <Text>{order.date}</Text>
